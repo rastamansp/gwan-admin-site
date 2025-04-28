@@ -99,11 +99,16 @@ O sistema implementa um fluxo de autenticação seguro com as seguintes etapas:
    - Redireciona para login após verificação
 
 3. **Login**:
-   - Usuário insere email e código
-   - Sistema valida credenciais
+   - Usuário insere email
+   - Sistema envia código de verificação
+   - Redireciona para página de verificação
+
+4. **Verificação de Login**:
+   - Usuário insere código recebido
+   - Sistema valida o código
    - Gera token JWT para autenticação
 
-4. **Proteção de Rotas**:
+5. **Proteção de Rotas**:
    - Rotas protegidas verificam token
    - Redireciona para login se não autenticado
    - Mantém URL original para redirecionamento após login
@@ -149,6 +154,58 @@ A aplicação está configurada para usar:
 - Certificados automáticos via Let's Encrypt
 - Domínio: admin.gwan.com.br
 - Porta do container: 5173
+
+## 📦 Procedimento de Deploy em Produção
+
+### Pré-requisitos
+- Acesso SSH ao servidor de produção
+- Docker e Docker Compose instalados
+- Traefik configurado com rede `gwan`
+- Certificados SSL configurados
+
+### Passos para Deploy
+
+1. **Preparação do Ambiente**:
+   ```bash
+   # Acesse o servidor via SSH
+   ssh usuario@servidor
+
+   # Navegue até o diretório do projeto
+   cd /opt/gwan-admin-site
+   ```
+
+2. **Atualização do Código**:
+   ```bash
+   # Atualize o código do repositório
+   git pull origin main
+
+   # Reconstrua a imagem e reinicie os containers
+   docker-compose down
+   docker-compose up -d --build
+   ```
+
+3. **Verificação**:
+   - Acesse https://admin.gwan.com.br
+   - Verifique os logs do container:
+     ```bash
+     docker-compose logs -f
+     ```
+
+### Configurações de Produção
+
+- **Imagem:** node:20-bullseye
+- **Container:** gwan-admin-site
+- **Rede:** gwan (externa)
+- **Volume:** /opt/gwan-admin-site:/app
+- **Porta:** 5173
+- **Domínio:** admin.gwan.com.br
+
+### Notas Importantes
+- O serviço é reiniciado automaticamente em caso de falha
+- Usa Node.js 20 com Debian Bullseye
+- Serve o build estático do site
+- Protegido por TLS via Let's Encrypt
+- Mantém logs para monitoramento
 
 ## 🛠 Desenvolvimento
 
