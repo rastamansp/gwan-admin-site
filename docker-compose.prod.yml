@@ -2,12 +2,13 @@ version: '3.8'
 
 services:
   gwan-admin-site:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: node:20-bullseye
     container_name: gwan-admin-site
+    working_dir: /app
+    command: sh -c "npm install -g serve && serve -s dist -l 3000"
     volumes:
       - /opt/gwan/gwan-admin-site:/app
+      - gwan-admin:/app/dist
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.gwan-admin-site.rule=Host(`admin.gwan.com.br`)"
@@ -20,4 +21,8 @@ services:
 
 networks:
   gwan:
+    external: true
+
+volumes:
+  gwan-admin:
     external: true 
