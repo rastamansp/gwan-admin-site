@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  gwan-admin:
+    build:
+      context: git://github.com/rastamansp/gwan-admin-site.git#main
+      dockerfile: Dockerfile
+    container_name: gwan-admin-site
+    restart: unless-stopped
+    networks:
+      - traefik-public
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-public"
+      - "traefik.http.routers.gwan-admin.rule=Host(`admin.gwan.com.br`)"
+      - "traefik.http.routers.gwan-admin.entrypoints=websecure"
+      - "traefik.http.routers.gwan-admin.tls=true"
+      - "traefik.http.routers.gwan-admin.tls.certresolver=letsencrypt"
+      - "traefik.http.services.gwan-admin.loadbalancer.server.port=5173"
+
+networks:
+  traefik-public:
+    external: true 
