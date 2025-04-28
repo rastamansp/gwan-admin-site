@@ -27,7 +27,7 @@ export default function MainLayout() {
       <Sidebar open={sidebarOpen} setOpen={setSidebarOpen} />
 
       {/* Main content */}
-      <div className="lg:pl-64">
+      <div className="lg:pl-72">
         <Header />
 
         <main className="py-10">

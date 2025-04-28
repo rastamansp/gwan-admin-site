@@ -1,17 +1,17 @@
 import { useTranslation } from 'react-i18next';
 
 export default function Dashboard() {
-  const { t } = useTranslation();
+  const { t } = useTranslation('dashboard');
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
-          {t('dashboard.title')}
+          {t('title')}
         </h1>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          {t('dashboard.description')}
+          {t('description')}
         </p>
       </div>
 
@@ -39,7 +39,7 @@ export default function Dashboard() {
               <div className="ml-5 w-0 flex-1">
                 <dl>
                   <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
-                    {t('dashboard.totalUsers')}
+                    {t('totalUsers')}
                   </dt>
                   <dd className="flex items-baseline">
                     <div className="text-2xl font-semibold text-gray-900 dark:text-white">
@@ -74,7 +74,7 @@ export default function Dashboard() {
               <div className="ml-5 w-0 flex-1">
                 <dl>
                   <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
-                    {t('dashboard.activeUsers')}
+                    {t('activeUsers')}
                   </dt>
                   <dd className="flex items-baseline">
                     <div className="text-2xl font-semibold text-gray-900 dark:text-white">
@@ -109,7 +109,7 @@ export default function Dashboard() {
               <div className="ml-5 w-0 flex-1">
                 <dl>
                   <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
-                    {t('dashboard.totalMessages')}
+                    {t('totalMessages')}
                   </dt>
                   <dd className="flex items-baseline">
                     <div className="text-2xl font-semibold text-gray-900 dark:text-white">
@@ -144,7 +144,7 @@ export default function Dashboard() {
               <div className="ml-5 w-0 flex-1">
                 <dl>
                   <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
-                    {t('dashboard.pendingActions')}
+                    {t('pendingActions')}
                   </dt>
                   <dd className="flex items-baseline">
                     <div className="text-2xl font-semibold text-gray-900 dark:text-white">
@@ -162,7 +162,7 @@ export default function Dashboard() {
       <div className="overflow-hidden rounded-lg bg-white dark:bg-gray-800 shadow">
         <div className="p-6">
           <h2 className="text-lg font-medium text-gray-900 dark:text-white">
-            {t('dashboard.recentActivity')}
+            {t('recentActivity')}
           </h2>
           <div className="mt-6 flow-root">
             <ul role="list" className="-my-5 divide-y divide-gray-200 dark:divide-gray-700">
@@ -177,7 +177,7 @@ export default function Dashboard() {
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium text-gray-900 dark:text-white">
-                      {t('dashboard.noActivity')}
+                      {t('noActivity')}
                     </p>
                   </div>
                 </div>

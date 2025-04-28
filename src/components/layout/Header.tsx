@@ -11,7 +11,7 @@ import {
 } from '@heroicons/react/24/outline';
 
 export default function Header() {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation('common');
   const navigate = useNavigate();
 
   const toggleTheme = () => {
@@ -43,7 +43,7 @@ export default function Header() {
             className="p-2 text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"
             onClick={toggleTheme}
           >
-            <span className="sr-only">{t('common.toggleTheme')}</span>
+            <span className="sr-only">{t('toggleTheme')}</span>
             {document.documentElement.classList.contains('dark') ? (
               <SunIcon className="h-6 w-6" aria-hidden="true" />
             ) : (
@@ -57,7 +57,7 @@ export default function Header() {
             className="p-2 text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"
             onClick={toggleLanguage}
           >
-            <span className="sr-only">{t('common.toggleLanguage')}</span>
+            <span className="sr-only">{t('toggleLanguage')}</span>
             <LanguageIcon className="h-6 w-6" aria-hidden="true" />
           </button>
 
@@ -66,14 +66,14 @@ export default function Header() {
             type="button"
             className="p-2 text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"
           >
-            <span className="sr-only">{t('common.notifications')}</span>
+            <span className="sr-only">{t('notifications')}</span>
             <BellIcon className="h-6 w-6" aria-hidden="true" />
           </button>
 
           {/* Profile dropdown */}
           <Menu as="div" className="relative">
             <Menu.Button className="-m-1.5 flex items-center p-1.5">
-              <span className="sr-only">{t('common.openUserMenu')}</span>
+              <span className="sr-only">{t('openUserMenu')}</span>
               <UserCircleIcon
                 className="h-8 w-8 text-gray-400"
                 aria-hidden="true"
@@ -102,7 +102,7 @@ export default function Header() {
                         }
                       `}
                     >
-                      {t('common.profile')}
+                      {t('profile')}
                     </a>
                   )}
                 </Menu.Item>
@@ -119,7 +119,7 @@ export default function Header() {
                         }
                       `}
                     >
-                      {t('common.logout')}
+                      {t('logout')}
                     </button>
                   )}
                 </Menu.Item>
