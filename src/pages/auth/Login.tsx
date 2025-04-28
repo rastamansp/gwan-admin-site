@@ -7,10 +7,7 @@ export default function Login() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const [formData, setFormData] = useState({
-    email: '',
-    code: '',
-  });
+  const [email, setEmail] = useState('');
   const [error, setError] = useState('');
 
   // Obtém a URL original para redirecionamento após login
@@ -19,14 +16,14 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      console.log('Enviando dados de login:', formData);
+      console.log('Enviando email para login:', email);
 
       const response = await fetch(`${env.API_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ email }),
       });
 
       if (response.status === 404) {
@@ -40,11 +37,8 @@ export default function Login() {
         throw new Error(errorData.message || 'Login failed');
       }
 
-      const data = await response.json();
-      // TODO: Armazenar token
-      localStorage.setItem('token', data.token);
-
-      navigate(from);
+      // Redireciona para a página de verificação com o email
+      navigate('/auth/verify-login', { state: { email } });
     } catch (err) {
       console.error('Erro completo:', err);
       setError(t('auth.loginError'));
@@ -70,25 +64,10 @@ export default function Login() {
                 name="email"
                 type="email"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm dark:bg-gray-800"
+                className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm dark:bg-gray-800"
                 placeholder={t('auth.email')}
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              />
-            </div>
-            <div>
-              <label htmlFor="code" className="sr-only">
-                {t('auth.verificationCode')}
-              </label>
-              <input
-                id="code"
-                name="code"
-                type="text"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm dark:bg-gray-800"
-                placeholder={t('auth.verificationCode')}
-                value={formData.code}
-                onChange={(e) => setFormData({ ...formData, code: e.target.value })}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
           </div>
