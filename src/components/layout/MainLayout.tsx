@@ -1,6 +1,6 @@
 import { ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon } from '@heroicons/react/24/outline';
 import Sidebar from './Sidebar';
 import Header from './Header';
 

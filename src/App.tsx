@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import Register from './pages/auth/Register';
 import Verify from './pages/auth/Verify';
 import Login from './pages/auth/Login';
@@ -8,8 +7,6 @@ import MainLayout from './components/layout/MainLayout';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 
 function App() {
-  const { t } = useTranslation();
-
   return (
     <Router>
       <Routes>
@@ -24,7 +21,9 @@ function App() {
           path="/"
           element={
             <ProtectedRoute>
-              <MainLayout />
+              <MainLayout>
+                {/* Seu conteúdo aqui */}
+              </MainLayout>
             </ProtectedRoute>
           }
         >
