@@ -1,0 +1,16 @@
+{
+  "dashboard": "Painel",
+  "users": "Usuários",
+  "settings": "Configurações",
+  "profile": "Perfil",
+  "notifications": "Notificações",
+  "logout": "Sair",
+  "language": "Idioma",
+  "theme": "Tema",
+  "dark": "Escuro",
+  "light": "Claro",
+  "toggleTheme": "Alternar tema",
+  "toggleLanguage": "Alternar idioma",
+  "openUserMenu": "Abrir menu do usuário",
+  "openSidebar": "Abrir barra lateral"
+} 

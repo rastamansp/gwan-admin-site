@@ -1,0 +1,16 @@
+{
+  "dashboard": "Dashboard",
+  "users": "Users",
+  "settings": "Settings",
+  "profile": "Profile",
+  "notifications": "Notifications",
+  "logout": "Logout",
+  "language": "Language",
+  "theme": "Theme",
+  "dark": "Dark",
+  "light": "Light",
+  "toggleTheme": "Toggle theme",
+  "toggleLanguage": "Toggle language",
+  "openUserMenu": "Open user menu",
+  "openSidebar": "Open sidebar"
+} 
