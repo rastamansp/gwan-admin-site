@@ -5,6 +5,7 @@ import Login from './pages/auth/Login';
 import VerifyLogin from './pages/auth/VerifyLogin';
 import MainLayout from './components/layout/MainLayout';
 import ProtectedRoute from './components/auth/ProtectedRoute';
+import Dashboard from './pages/dashboard/Dashboard';
 
 function App() {
   return (
@@ -26,7 +27,7 @@ function App() {
           }
         >
           <Route index element={<Navigate to="/dashboard" replace />} />
-          <Route path="dashboard" element={<div>Dashboard</div>} />
+          <Route path="dashboard" element={<Dashboard />} />
           {/* Adicione mais rotas protegidas aqui */}
         </Route>
 
