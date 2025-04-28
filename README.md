@@ -27,6 +27,7 @@ src/
 │   ├── common/  # Componentes comuns
 │   ├── layout/  # Componentes de layout (Header, Sidebar, etc)
 │   └── modules/ # Componentes específicos de módulos
+├── config/      # Configurações do projeto
 ├── hooks/       # Custom React hooks
 ├── i18n/        # Configurações e arquivos de internacionalização
 ├── pages/       # Componentes de página
@@ -39,7 +40,7 @@ src/
 
 1. Clone o repositório:
 ```bash
-git clone [url-do-repositorio]
+git clone https://github.com/rastamansp/gwan-admin-site.git
 cd gwan-admin-site
 ```
 
@@ -47,6 +48,27 @@ cd gwan-admin-site
 ```bash
 npm install
 ```
+
+3. Configure as variáveis de ambiente:
+```bash
+# Copie o arquivo de exemplo
+cp .env.example .env
+
+# Edite o arquivo .env com suas configurações
+```
+
+## 🌍 Variáveis de Ambiente
+
+O projeto utiliza as seguintes variáveis de ambiente:
+
+```env
+VITE_API_URL=http://localhost:3000  # URL da API backend
+```
+
+Você pode criar diferentes arquivos para diferentes ambientes:
+- `.env.development` - Desenvolvimento local
+- `.env.production` - Produção
+- `.env.staging` - Ambiente de staging
 
 ## 🚀 Executando o Projeto
 
@@ -62,6 +84,30 @@ Outros comandos disponíveis:
 - `npm run preview` - Visualiza build de produção localmente
 - `npm run lint` - Executa verificação de linting
 
+## 🔐 Fluxo de Autenticação
+
+O sistema implementa um fluxo de autenticação seguro com as seguintes etapas:
+
+1. **Registro**:
+   - Usuário preenche nome, email e WhatsApp
+   - Sistema verifica duplicidade de email/WhatsApp
+   - Envia código de verificação via WhatsApp
+
+2. **Verificação de Registro**:
+   - Usuário insere código recebido
+   - Sistema valida o código
+   - Redireciona para login após verificação
+
+3. **Login**:
+   - Usuário insere email e código
+   - Sistema valida credenciais
+   - Gera token JWT para autenticação
+
+4. **Proteção de Rotas**:
+   - Rotas protegidas verificam token
+   - Redireciona para login se não autenticado
+   - Mantém URL original para redirecionamento após login
+
 ## 🌐 Internacionalização
 
 O projeto suporta múltiplos idiomas (PT-BR e EN) usando i18next. A mudança de idioma pode ser feita através do botão de idioma no cabeçalho.
@@ -69,42 +115,6 @@ O projeto suporta múltiplos idiomas (PT-BR e EN) usando i18next. A mudança de 
 ## 🎨 Temas
 
 O site suporta tema claro e escuro, com alternância automática baseada nas preferências do sistema e opção manual no cabeçalho.
-
-## 🔐 Autenticação
-
-O sistema inclui:
-- Login/Logout
-- Gerenciamento de perfil de usuário
-- Controle de acesso baseado em permissões
-
-## 🛠 Desenvolvimento
-
-### Padrões de Código
-
-- Utilize TypeScript para todo novo código
-- Siga as regras de linting configuradas
-- Mantenha os componentes pequenos e focados
-- Use os hooks personalizados para lógica reutilizável
-- Mantenha a consistência com o design system existente
-
-### Componentes
-
-Os componentes seguem uma estrutura modular:
-- `components/common/` - Componentes base reutilizáveis
-- `components/layout/` - Componentes estruturais (Header, Sidebar)
-- `components/modules/` - Componentes específicos de funcionalidades
-
-## 📝 Licença
-
-Este projeto está sob a licença [inserir tipo de licença].
-
-## 👥 Contribuição
-
-1. Faça o fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
 
 ## 🐳 Docker
 
@@ -138,9 +148,33 @@ A aplicação está configurada para usar:
 - HTTPS obrigatório
 - Certificados automáticos via Let's Encrypt
 - Domínio: admin.gwan.com.br
-- Porta do container: 80
+- Porta do container: 5173
 
-### Volumes e Persistência
+## 🛠 Desenvolvimento
 
-- A aplicação é stateless e não requer volumes persistentes
-- Os assets são servidos através do Nginx em modo somente leitura
+### Padrões de Código
+
+- Utilize TypeScript para todo novo código
+- Siga as regras de linting configuradas
+- Mantenha os componentes pequenos e focados
+- Use os hooks personalizados para lógica reutilizável
+- Mantenha a consistência com o design system existente
+
+### Componentes
+
+Os componentes seguem uma estrutura modular:
+- `components/common/` - Componentes base reutilizáveis
+- `components/layout/` - Componentes estruturais (Header, Sidebar)
+- `components/modules/` - Componentes específicos de funcionalidades
+
+## 📝 Licença
+
+Este projeto está sob a licença [inserir tipo de licença].
+
+## 👥 Contribuição
+
+1. Faça o fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
