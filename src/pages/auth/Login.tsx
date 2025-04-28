@@ -10,9 +10,6 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
 
-  // Obtém a URL original para redirecionamento após login
-  const from = location.state?.from?.pathname || '/dashboard';
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
