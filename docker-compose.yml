@@ -1,23 +1,25 @@
 version: '3.8'
 
 services:
-  gwan-admin:
-    build:
-      context: git://github.com/rastamansp/gwan-admin-site.git#main
-      dockerfile: Dockerfile
+  gwan-admin-site:
+    image: node:20-bullseye  # Usa imagem oficial Node.js
     container_name: gwan-admin-site
-    restart: unless-stopped
-    networks:
-      - traefik-public
+    working_dir: /app  # Diretório de trabalho dentro do container
+    # Comando para servir o build do React/Vite
+    command: sh -c "npm install -g serve && serve -s dist -l 3000"
+    volumes:
+      - /opt/gwan-admin-site:/app  # Mapeia o código e o build do host para o container
     labels:
+      # Configurações do Traefik para domínio e HTTPS
       - "traefik.enable=true"
-      - "traefik.docker.network=traefik-public"
-      - "traefik.http.routers.gwan-admin.rule=Host(`admin.gwan.com.br`)"
-      - "traefik.http.routers.gwan-admin.entrypoints=websecure"
-      - "traefik.http.routers.gwan-admin.tls=true"
-      - "traefik.http.routers.gwan-admin.tls.certresolver=letsencrypt"
-      - "traefik.http.services.gwan-admin.loadbalancer.server.port=5173"
+      - "traefik.http.routers.gwan-admin-site.rule=Host(`admin.gwan.com.br`)"
+      - "traefik.http.routers.gwan-admin-site.entrypoints=websecure"
+      - "traefik.http.routers.gwan-admin-site.tls.certresolver=letsencrypt"
+      - "traefik.http.services.gwan-admin-site.loadbalancer.server.port=3000"
+    restart: always  # Reinicia automaticamente em caso de falha
+    networks:
+      - gwan  # Usa a rede externa 'gwan'
 
 networks:
-  traefik-public:
-    external: true 
+  gwan:
+    external: true  # Rede deve existir previamente no Docker 
