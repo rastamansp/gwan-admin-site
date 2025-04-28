@@ -1,0 +1,10 @@
+{
+  "title": "Dashboard",
+  "description": "System overview and important metrics",
+  "totalUsers": "Total Users",
+  "activeUsers": "Active Users",
+  "totalMessages": "Total Messages",
+  "pendingActions": "Pending Actions",
+  "recentActivity": "Recent Activity",
+  "noActivity": "No recent activity"
+} 

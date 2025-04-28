@@ -1,0 +1,10 @@
+{
+  "title": "Painel de Controle",
+  "description": "Visão geral do sistema e métricas importantes",
+  "totalUsers": "Total de Usuários",
+  "activeUsers": "Usuários Ativos",
+  "totalMessages": "Total de Mensagens",
+  "pendingActions": "Ações Pendentes",
+  "recentActivity": "Atividade Recente",
+  "noActivity": "Nenhuma atividade recente"
+} 

@@ -1,5 +1,9 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import authPt from './locales/pt/auth.json';
+import authEn from './locales/en/auth.json';
+import dashboardPt from './locales/pt/dashboard.json';
+import dashboardEn from './locales/en/dashboard.json';
 
 const resources = {
   en: {
@@ -16,14 +20,8 @@ const resources = {
         dark: 'Dark',
         light: 'Light',
       },
-      auth: {
-        login: 'Login',
-        register: 'Register',
-        email: 'Email',
-        password: 'Password',
-        forgotPassword: 'Forgot Password?',
-        rememberMe: 'Remember Me',
-      },
+      auth: authEn,
+      dashboard: dashboardEn,
     },
   },
   pt: {
@@ -40,14 +38,8 @@ const resources = {
         dark: 'Escuro',
         light: 'Claro',
       },
-      auth: {
-        login: 'Entrar',
-        register: 'Registrar',
-        email: 'E-mail',
-        password: 'Senha',
-        forgotPassword: 'Esqueceu a senha?',
-        rememberMe: 'Lembrar-me',
-      },
+      auth: authPt,
+      dashboard: dashboardPt,
     },
   },
 };
