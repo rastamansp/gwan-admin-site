@@ -1,4 +1,5 @@
-FROM node:20-alpine
+# Build stage
+FROM node:20-bullseye as build
 
 WORKDIR /app
 
@@ -12,8 +13,19 @@ COPY . .
 # Build the application
 RUN npm run build
 
+# Production stage
+FROM node:20-bullseye
+
+WORKDIR /app
+
+# Copy built assets from build stage
+COPY --from=build /app/dist ./dist
+
+# Install only production dependencies
+RUN npm install -g serve
+
 # Expose port
-EXPOSE 5173
+EXPOSE 3000
 
 # Start the application
-CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "5173"] 
+CMD ["serve", "-s", "dist", "-l", "3000"] 
