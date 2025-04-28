@@ -33,10 +33,21 @@ export default function VerifyLogin() {
       }
 
       const data = await response.json();
-      // TODO: Armazenar token
-      localStorage.setItem('token', data.token);
+      console.log('Resposta da API:', data);
 
-      navigate('/dashboard');
+      // Verifica se o token existe na resposta
+      if (!data.token) {
+        console.error('Token não encontrado na resposta:', data);
+        throw new Error('Token não recebido do servidor');
+      }
+
+      // Armazena o token
+      localStorage.setItem('token', data.token);
+      console.log('Token armazenado com sucesso');
+
+      // Redireciona para o dashboard
+      console.log('Redirecionando para o dashboard...');
+      navigate('/dashboard', { replace: true });
     } catch (err) {
       console.error('Erro completo:', err);
       setError(t('auth.verificationError'));

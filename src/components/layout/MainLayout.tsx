@@ -1,14 +1,11 @@
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Outlet } from 'react-router-dom';
 import { Bars3Icon } from '@heroicons/react/24/outline';
 import Sidebar from './Sidebar';
 import Header from './Header';
 
-interface MainLayoutProps {
-  children: ReactNode;
-}
-
-export default function MainLayout({ children }: MainLayoutProps) {
+export default function MainLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { t } = useTranslation();
 
@@ -35,7 +32,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
 
         <main className="py-10">
           <div className="px-4 sm:px-6 lg:px-8">
-            {children}
+            <Outlet />
           </div>
         </main>
       </div>
