@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import env from '../../config/env';
 
 export default function Login() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const location = useLocation();
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
 
