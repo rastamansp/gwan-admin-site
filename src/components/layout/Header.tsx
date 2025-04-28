@@ -1,6 +1,7 @@
 import { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import {
   BellIcon,
   UserCircleIcon,
@@ -11,6 +12,7 @@ import {
 
 export default function Header() {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
 
   const toggleTheme = () => {
     const isDark = document.documentElement.classList.toggle('dark');
@@ -21,6 +23,13 @@ export default function Header() {
     const newLang = i18n.language === 'pt' ? 'en' : 'pt';
     i18n.changeLanguage(newLang);
     localStorage.setItem('language', newLang);
+  };
+
+  const handleLogout = () => {
+    // Remove o token
+    localStorage.removeItem('token');
+    // Redireciona para a página de login
+    navigate('/auth/login');
   };
 
   return (
@@ -99,10 +108,10 @@ export default function Header() {
                 </Menu.Item>
                 <Menu.Item>
                   {({ active }) => (
-                    <a
-                      href="#"
+                    <button
+                      onClick={handleLogout}
                       className={`
-                        block px-3 py-1 text-sm leading-6
+                        block w-full text-left px-3 py-1 text-sm leading-6
                         ${
                           active
                             ? 'bg-gray-50 text-gray-900 dark:bg-gray-700 dark:text-gray-100'
@@ -111,7 +120,7 @@ export default function Header() {
                       `}
                     >
                       {t('common.logout')}
-                    </a>
+                    </button>
                   )}
                 </Menu.Item>
               </Menu.Items>
