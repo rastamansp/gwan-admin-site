@@ -22,15 +22,15 @@ function App() {
           element={
             <ProtectedRoute>
               <MainLayout>
-                {/* Seu conteúdo aqui */}
+                <Routes>
+                  <Route index element={<Navigate to="/dashboard" replace />} />
+                  <Route path="dashboard" element={<div>Dashboard</div>} />
+                  {/* Adicione mais rotas protegidas aqui */}
+                </Routes>
               </MainLayout>
             </ProtectedRoute>
           }
-        >
-          <Route index element={<Navigate to="/dashboard" replace />} />
-          <Route path="dashboard" element={<div>Dashboard</div>} />
-          {/* Adicione mais rotas protegidas aqui */}
-        </Route>
+        />
 
         {/* Rota padrão */}
         <Route path="*" element={<Navigate to="/auth/login" replace />} />
