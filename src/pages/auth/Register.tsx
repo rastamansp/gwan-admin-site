@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import env from '../../config/env';
+import AuthFooter from '../../components/auth/AuthFooter';
 
 export default function Register() {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['auth']);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
@@ -32,7 +33,7 @@ export default function Register() {
       });
 
       if (response.status === 409) {
-        setError(t('auth.emailOrWhatsAppExists'));
+        setError(t('emailOrWhatsAppExists'));
         return;
       }
 
@@ -45,23 +46,23 @@ export default function Register() {
       navigate('/auth/verify', { state: { email: formData.email } });
     } catch (err) {
       console.error('Erro completo:', err);
-      setError(t('auth.registrationError'));
+      setError(t('registrationError'));
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 relative">
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
-            {t('auth.register')}
+            {t('register')}
           </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <label htmlFor="name" className="sr-only">
-                {t('auth.name')}
+                {t('name')}
               </label>
               <input
                 id="name"
@@ -69,14 +70,14 @@ export default function Register() {
                 type="text"
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm dark:bg-gray-800"
-                placeholder={t('auth.name')}
+                placeholder={t('name')}
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               />
             </div>
             <div>
               <label htmlFor="email" className="sr-only">
-                {t('auth.email')}
+                {t('email')}
               </label>
               <input
                 id="email"
@@ -84,14 +85,14 @@ export default function Register() {
                 type="email"
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm dark:bg-gray-800"
-                placeholder={t('auth.email')}
+                placeholder={t('email')}
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               />
             </div>
             <div>
               <label htmlFor="whatsapp" className="sr-only">
-                {t('auth.whatsapp')}
+                {t('whatsapp')}
               </label>
               <input
                 id="whatsapp"
@@ -99,7 +100,7 @@ export default function Register() {
                 type="tel"
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm dark:bg-gray-800"
-                placeholder={t('auth.whatsapp')}
+                placeholder={t('whatsapp')}
                 value={formData.whatsapp}
                 onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
               />
@@ -115,11 +116,12 @@ export default function Register() {
               type="submit"
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              {t('auth.register')}
+              {t('register')}
             </button>
           </div>
         </form>
       </div>
+      <AuthFooter />
     </div>
   );
 } 

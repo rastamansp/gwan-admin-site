@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import env from '../../config/env';
+import AuthFooter from '../../components/auth/AuthFooter';
 
 export default function Login() {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['auth']);
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
@@ -23,7 +24,7 @@ export default function Login() {
       });
 
       if (response.status === 404) {
-        setError(t('auth.userNotFound'));
+        setError(t('userNotFound'));
         return;
       }
 
@@ -33,27 +34,26 @@ export default function Login() {
         throw new Error(errorData.message || 'Login failed');
       }
 
-      // Redireciona para a página de verificação com o email
       navigate('/auth/verify-login', { state: { email } });
     } catch (err) {
       console.error('Erro completo:', err);
-      setError(t('auth.loginError'));
+      setError(t('loginError'));
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 relative">
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
-            {t('auth.login')}
+            {t('login')}
           </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <label htmlFor="email" className="sr-only">
-                {t('auth.email')}
+                {t('email')}
               </label>
               <input
                 id="email"
@@ -61,7 +61,7 @@ export default function Login() {
                 type="email"
                 required
                 className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm dark:bg-gray-800"
-                placeholder={t('auth.email')}
+                placeholder={t('email')}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -77,23 +77,24 @@ export default function Login() {
               type="submit"
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              {t('auth.login')}
+              {t('login')}
             </button>
           </div>
         </form>
 
         <div className="text-center">
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            {t('auth.noAccount')}{' '}
+            {t('noAccount')}{' '}
             <Link
               to="/auth/register"
               className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
             >
-              {t('auth.register')}
+              {t('register')}
             </Link>
           </p>
         </div>
       </div>
+      <AuthFooter />
     </div>
   );
 } 

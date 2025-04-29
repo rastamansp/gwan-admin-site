@@ -7,31 +7,36 @@ import dashboardEn from './locales/en/dashboard.json';
 import commonPt from './locales/pt/common.json';
 import commonEn from './locales/en/common.json';
 
-const resources = {
-  en: {
-    common: commonEn,
-    auth: authEn,
-    dashboard: dashboardEn,
-  },
-  pt: {
-    common: commonPt,
-    auth: authPt,
-    dashboard: dashboardPt,
-  },
-};
-
 i18n
   .use(initReactI18next)
   .init({
-    resources,
+    resources: {
+      pt: {
+        auth: authPt,
+        dashboard: dashboardPt,
+        common: commonPt
+      },
+      en: {
+        auth: authEn,
+        dashboard: dashboardEn,
+        common: commonEn
+      }
+    },
     lng: 'pt',
     fallbackLng: 'en',
+    ns: ['auth', 'common', 'dashboard'],
+    defaultNS: 'auth',
     interpolation: {
-      escapeValue: false,
+      escapeValue: false
     },
-    ns: ['common', 'auth', 'dashboard'],
-    defaultNS: 'common',
-    debug: true,
+    react: {
+      useSuspense: false
+    },
+    debug: true
   });
+
+i18n.loadNamespaces(['auth', 'common', 'dashboard']).then(() => {
+  console.log('i18n namespaces loaded');
+});
 
 export default i18n; 
