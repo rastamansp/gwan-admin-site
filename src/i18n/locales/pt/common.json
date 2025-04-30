@@ -1,5 +1,5 @@
 {
-  "dashboard": "Painel",
+  "dashboard": "Dashboard",
   "users": "Usuários",
   "settings": "Configurações",
   "profile": "Perfil",
@@ -12,5 +12,14 @@
   "toggleTheme": "Alternar tema",
   "toggleLanguage": "Alternar idioma",
   "openUserMenu": "Abrir menu do usuário",
-  "openSidebar": "Abrir barra lateral"
+  "openSidebar": "Abrir menu lateral",
+  "datasets": {
+    "upload": "Upload de Datasets"
+  },
+  "common": {
+    "closeSidebar": "Fechar menu lateral",
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso"
+  }
 } 

@@ -6,6 +6,7 @@ import {
   HomeIcon,
   UsersIcon,
   Cog6ToothIcon,
+  DocumentArrowUpIcon,
 } from '@heroicons/react/24/outline';
 
 interface SidebarProps {
@@ -17,6 +18,7 @@ const navigation = [
   { name: 'dashboard', href: '/', icon: HomeIcon },
   { name: 'users', href: '/users', icon: UsersIcon },
   { name: 'settings', href: '/settings', icon: Cog6ToothIcon },
+  { name: 'datasets.upload', href: '/datasets/upload', icon: DocumentArrowUpIcon },
 ];
 
 export default function Sidebar({ open, setOpen }: SidebarProps) {

@@ -6,6 +6,7 @@ import VerifyLogin from './pages/auth/VerifyLogin';
 import MainLayout from './components/layout/MainLayout';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import Dashboard from './pages/dashboard/Dashboard';
+import DatasetUpload from './pages/DatasetUpload';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         >
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
+          <Route path="datasets/upload" element={<DatasetUpload />} />
           {/* Adicione mais rotas protegidas aqui */}
         </Route>
 

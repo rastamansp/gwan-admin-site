@@ -2,6 +2,16 @@
   "dashboard": "Dashboard",
   "users": "Users",
   "settings": "Settings",
+  "datasets": {
+    "upload": "Upload Datasets"
+  },
+  "common": {
+    "openSidebar": "Open sidebar",
+    "closeSidebar": "Close sidebar",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  },
   "profile": "Profile",
   "notifications": "Notifications",
   "logout": "Logout",
@@ -11,6 +21,5 @@
   "light": "Light",
   "toggleTheme": "Toggle theme",
   "toggleLanguage": "Toggle language",
-  "openUserMenu": "Open user menu",
-  "openSidebar": "Open sidebar"
+  "openUserMenu": "Open user menu"
 } 
