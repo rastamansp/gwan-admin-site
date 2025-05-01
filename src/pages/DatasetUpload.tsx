@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { DatasetService, DatasetFile } from '../services/dataset.service';
 import { formatFileSize, formatDate } from '../utils/format';
-import { useTranslation } from 'react-i18next';
 
 const DatasetUpload: React.FC = () => {
-    const { t } = useTranslation();
     const [files, setFiles] = useState<DatasetFile[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);

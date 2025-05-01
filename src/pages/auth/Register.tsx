@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import env from '../../config/env';
 import AuthFooter from '../../components/auth/AuthFooter';
 import axios from 'axios';
-import AuthService from '../../services/auth.service';
 
 const Register: React.FC = () => {
   const { t } = useTranslation(['auth']);
@@ -16,7 +15,6 @@ const Register: React.FC = () => {
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const authService = AuthService.getInstance();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

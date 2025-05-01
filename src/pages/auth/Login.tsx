@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import env from '../../config/env';
 import AuthFooter from '../../components/auth/AuthFooter';
 import axios from 'axios';
-import AuthService from '../../services/auth.service';
 
 const Login: React.FC = () => {
   const { t } = useTranslation(['auth']);
@@ -12,7 +11,6 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const authService = AuthService.getInstance();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,6 +1,6 @@
 import { Fragment, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 import { Outlet } from 'react-router-dom';
 import { useTheme } from '../../hooks/useTheme';
 import Sidebar from './Sidebar';
