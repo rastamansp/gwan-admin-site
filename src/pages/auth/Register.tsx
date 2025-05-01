@@ -1,52 +1,52 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import env from '../../config/env';
 import AuthFooter from '../../components/auth/AuthFooter';
+import axios from 'axios';
+import AuthService from '../../services/auth.service';
 
-export default function Register() {
+const Register: React.FC = () => {
   const { t } = useTranslation(['auth']);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: '',
     email: '',
-    whatsapp: '',
+    name: '',
+    whatsapp: ''
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const authService = AuthService.getInstance();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+    setLoading(true);
+
     try {
-      // Log para debug
-      console.log('Enviando dados:', formData);
-
-      const response = await fetch(`${env.API_URL}/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
+      // Registrar usuário
+      await axios.post(`${env.API_URL}/auth/register`, formData);
+      
+      // Redirecionar para página de verificação
+      navigate('/auth/verify', { 
+        state: { 
           email: formData.email,
-          whatsapp: formData.whatsapp,
-        }),
+          message: 'Por favor, verifique seu e-mail para continuar o processo de registro.'
+        }
       });
-
-      if (response.status === 409) {
-        setError(t('emailOrWhatsAppExists'));
-        return;
-      }
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Erro na resposta:', errorData);
-        throw new Error(errorData.message || 'Registration failed');
-      }
-
-      navigate('/auth/verify', { state: { email: formData.email } });
     } catch (err) {
-      console.error('Erro completo:', err);
-      setError(t('registrationError'));
+      console.error('Erro ao registrar:', err);
+      setError('Erro ao criar conta. Verifique se os dados são válidos.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -57,71 +57,93 @@ export default function Register() {
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
             {t('register')}
           </h2>
+          <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+            {t('createAccount')}
+          </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
+          {error && (
+            <div className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded">
+              {error}
+            </div>
+          )}
+
+          <div className="space-y-4">
             <div>
-              <label htmlFor="name" className="sr-only">
-                {t('name')}
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Nome
               </label>
               <input
                 id="name"
                 name="name"
                 type="text"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm dark:bg-gray-800"
-                placeholder={t('name')}
+                className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm dark:bg-gray-800"
+                placeholder="Digite seu nome completo"
                 value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                onChange={handleChange}
               />
             </div>
+
             <div>
-              <label htmlFor="email" className="sr-only">
-                {t('email')}
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                E-mail
               </label>
               <input
                 id="email"
                 name="email"
                 type="email"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm dark:bg-gray-800"
-                placeholder={t('email')}
+                className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm dark:bg-gray-800"
+                placeholder="Digite seu e-mail"
                 value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                onChange={handleChange}
               />
             </div>
+
             <div>
-              <label htmlFor="whatsapp" className="sr-only">
-                {t('whatsapp')}
+              <label htmlFor="whatsapp" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                WhatsApp
               </label>
               <input
                 id="whatsapp"
                 name="whatsapp"
                 type="tel"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm dark:bg-gray-800"
-                placeholder={t('whatsapp')}
+                className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm dark:bg-gray-800"
+                placeholder="Digite seu WhatsApp"
                 value={formData.whatsapp}
-                onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
+                onChange={handleChange}
               />
             </div>
           </div>
 
-          {error && (
-            <div className="text-red-500 text-sm text-center">{error}</div>
-          )}
-
           <div>
             <button
               type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              disabled={loading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
             >
-              {t('register')}
+              {loading ? t('creating') : t('createAccount')}
             </button>
           </div>
         </form>
+
+        <div className="text-center">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            {t('alreadyHaveAccount')}{' '}
+            <Link
+              to="/auth/login"
+              className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+            >
+              {t('login')}
+            </Link>
+          </p>
+        </div>
       </div>
       <AuthFooter />
     </div>
   );
-} 
+};
+
+export default Register; 

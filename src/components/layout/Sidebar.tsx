@@ -1,12 +1,13 @@
 import { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   HomeIcon,
-  UsersIcon,
+  UserGroupIcon,
   Cog6ToothIcon,
   DocumentArrowUpIcon,
+  BookOpenIcon
 } from '@heroicons/react/24/outline';
 
 interface SidebarProps {
@@ -16,14 +17,22 @@ interface SidebarProps {
 
 const navigation = [
   { name: 'dashboard', href: '/', icon: HomeIcon },
-  { name: 'users', href: '/users', icon: UsersIcon },
-  { name: 'settings', href: '/settings', icon: Cog6ToothIcon },
+  { name: 'users', href: '/users', icon: UserGroupIcon },
   { name: 'datasets.upload', href: '/datasets/upload', icon: DocumentArrowUpIcon },
+  { name: 'knowledge', href: '/knowledge', icon: BookOpenIcon },
+  { name: 'settings', href: '/settings', icon: Cog6ToothIcon },
 ];
 
 export default function Sidebar({ open, setOpen }: SidebarProps) {
   const { t } = useTranslation('common');
   const location = useLocation();
+
+  const isActive = (path: string) => {
+    if (path === '/') {
+      return location.pathname === path;
+    }
+    return location.pathname.startsWith(path);
+  };
 
   return (
     <>
@@ -72,7 +81,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                                 className={`
                                   group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold
                                   ${
-                                    location.pathname === item.href
+                                    isActive(item.href)
                                       ? 'bg-gray-50 text-primary-600 dark:bg-gray-700 dark:text-primary-400'
                                       : 'text-gray-700 hover:text-primary-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-primary-400'
                                   }
@@ -118,7 +127,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                         className={`
                           group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold
                           ${
-                            location.pathname === item.href
+                            isActive(item.href)
                               ? 'bg-gray-50 text-primary-600 dark:bg-gray-700 dark:text-primary-400'
                               : 'text-gray-700 hover:text-primary-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-primary-400'
                           }

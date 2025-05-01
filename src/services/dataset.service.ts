@@ -1,24 +1,23 @@
 import axios from 'axios';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+import { getAuthToken } from '../utils/auth';
 
 export interface DatasetFile {
     id: string;
-    originalname: string;
-    filename: string;
+    name: string;
     size: number;
-    mimetype: string;
+    lastModified: string;
+    etag: string;
+    originalName: string;
+    mimeType: string;
     url: string;
-    createdAt: string;
-    lastModified?: string;
 }
 
 export class DatasetService {
     private static instance: DatasetService;
-    private token: string | null = null;
+    private baseUrl: string;
 
     private constructor() {
-        this.token = localStorage.getItem('token');
+        this.baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
     }
 
     public static getInstance(): DatasetService {
@@ -29,60 +28,42 @@ export class DatasetService {
     }
 
     private getHeaders() {
+        const token = getAuthToken();
         return {
-            Authorization: `Bearer ${this.token}`,
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${token}`
         };
     }
 
-    async listFiles(): Promise<DatasetFile[]> {
-        try {
-            const response = await axios.get(`${API_URL}/user/dataset/list`, {
-                headers: this.getHeaders(),
-            });
-
-            // Mapear a resposta da API para o formato esperado
-            return response.data.map((file: any) => ({
-                id: file.id,
-                originalname: file.originalName || file.name,
-                filename: file.fileName || file.name,
-                size: file.size,
-                mimetype: file.mimeType || file.mimetype,
-                url: file.url,
-                createdAt: file.createdAt || file.lastModified,
-                lastModified: file.lastModified
-            }));
-        } catch (error) {
-            console.error('Error listing files:', error);
-            throw error;
-        }
+    private getJsonHeaders() {
+        const token = getAuthToken();
+        return {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        };
     }
 
     async uploadFile(file: File): Promise<DatasetFile> {
-        try {
-            const formData = new FormData();
-            formData.append('file', file);
+        const formData = new FormData();
+        formData.append('file', file);
 
-            const response = await axios.post(`${API_URL}/user/dataset/upload`, formData, {
-                headers: {
-                    ...this.getHeaders(),
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
+        const response = await axios.post(`${this.baseUrl}/user/dataset/upload`, formData, {
+            headers: this.getHeaders(),
+        });
 
-            // Mapear a resposta da API para o formato esperado
-            return {
-                id: response.data.id,
-                originalname: response.data.originalname,
-                filename: response.data.filename,
-                size: response.data.size,
-                mimetype: response.data.mimetype,
-                url: response.data.url,
-                createdAt: response.data.createdAt || new Date().toISOString(),
-                lastModified: response.data.lastModified
-            };
-        } catch (error) {
-            console.error('Error uploading file:', error);
-            throw error;
-        }
+        return response.data;
+    }
+
+    async listFiles(): Promise<DatasetFile[]> {
+        const response = await axios.get(`${this.baseUrl}/user/dataset/list`, {
+            headers: this.getJsonHeaders(),
+        });
+        return response.data;
+    }
+
+    async deleteFile(id: string): Promise<void> {
+        await axios.delete(`${this.baseUrl}/user/dataset/${id}`, {
+            headers: this.getJsonHeaders(),
+        });
     }
 } 

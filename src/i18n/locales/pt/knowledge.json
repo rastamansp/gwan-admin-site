@@ -1,0 +1,40 @@
+{
+  "title": "Bases de Conhecimento",
+  "create": {
+    "title": "Adicionar Base",
+    "dataset": "Dataset",
+    "name": "Nome",
+    "description": "Descrição",
+    "submit": "Criar",
+    "cancel": "Cancelar",
+    "loading": "Criando...",
+    "selectDataset": "Selecione um dataset",
+    "namePlaceholder": "Digite o nome da base de conhecimento",
+    "descriptionPlaceholder": "Digite uma descrição para a base de conhecimento"
+  },
+  "status": {
+    "completed": "Concluído",
+    "processing": "Processando",
+    "failed": "Falhou",
+    "waiting": "Aguardando Processamento"
+  },
+  "delete": {
+    "confirm": "Tem certeza que deseja excluir esta base de conhecimento?",
+    "error": "Erro ao excluir base de conhecimento",
+    "button": "Excluir"
+  },
+  "errors": {
+    "load": "Erro ao carregar bases de conhecimento",
+    "create": "Erro ao criar base de conhecimento",
+    "loadDatasets": "Erro ao carregar datasets",
+    "required": "Preencha todos os campos"
+  },
+  "table": {
+    "name": "Nome",
+    "description": "Descrição",
+    "status": "Status",
+    "createdAt": "Criado em",
+    "actions": "Ações",
+    "empty": "Nenhuma base de conhecimento encontrada"
+  }
+} 
