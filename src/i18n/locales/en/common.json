@@ -2,9 +2,6 @@
   "dashboard": "Dashboard",
   "users": "Users",
   "settings": "Settings",
-  "datasets": {
-    "upload": "Upload Datasets"
-  },
   "common": {
     "openSidebar": "Open sidebar",
     "closeSidebar": "Close sidebar",

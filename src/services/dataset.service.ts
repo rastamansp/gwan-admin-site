@@ -10,6 +10,8 @@ export interface DatasetFile {
     originalName: string;
     mimeType: string;
     url: string;
+    fileName: string;
+    knowledgeBaseId?: string;
 }
 
 export class DatasetService {
@@ -48,6 +50,17 @@ export class DatasetService {
         formData.append('file', file);
 
         const response = await axios.post(`${this.baseUrl}/user/dataset/upload`, formData, {
+            headers: this.getHeaders(),
+        });
+
+        return response.data;
+    }
+
+    async uploadFileToKnowledgeBase(file: File, knowledgeBaseId: string): Promise<DatasetFile> {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await axios.post(`${this.baseUrl}/user/dataset/${knowledgeBaseId}/documents`, formData, {
             headers: this.getHeaders(),
         });
 

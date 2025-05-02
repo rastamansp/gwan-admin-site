@@ -1,18 +1,48 @@
 import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { DatasetService, DatasetFile } from '../services/dataset.service';
+import KnowledgeService, { KnowledgeBase } from '../services/knowledge.service';
 import { formatFileSize, formatDate } from '../utils/format';
+import { ArrowDownTrayIcon, DocumentPlusIcon } from '@heroicons/react/24/outline';
+import FileUploadModal from '../components/FileUploadModal';
 
 const DatasetUpload: React.FC = () => {
+    const { knowledgeBaseId } = useParams<{ knowledgeBaseId: string }>();
+    const navigate = useNavigate();
     const [files, setFiles] = useState<DatasetFile[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [uploadProgress, setUploadProgress] = useState<number>(0);
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [knowledgeBase, setKnowledgeBase] = useState<KnowledgeBase | null>(null);
+    const [loadingKnowledge, setLoadingKnowledge] = useState(true);
+    const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
     const datasetService = DatasetService.getInstance();
+    const knowledgeService = KnowledgeService.getInstance();
 
     useEffect(() => {
         loadFiles();
-    }, []);
+        if (knowledgeBaseId) {
+            loadKnowledgeBase();
+        }
+    }, [knowledgeBaseId]);
+
+    const loadKnowledgeBase = async () => {
+        if (!knowledgeBaseId) return;
+        
+        try {
+            setLoadingKnowledge(true);
+            const knowledge = await knowledgeService.getKnowledgeById(knowledgeBaseId);
+            setKnowledgeBase(knowledge);
+        } catch (err) {
+            console.error('Erro ao carregar base de conhecimento:', err);
+            setError('Base de conhecimento não encontrada');
+            // Redireciona para a lista de bases de conhecimento após um erro
+            setTimeout(() => {
+                navigate('/knowledge');
+            }, 3000);
+        } finally {
+            setLoadingKnowledge(false);
+        }
+    };
 
     const loadFiles = async () => {
         try {
@@ -27,165 +57,123 @@ const DatasetUpload: React.FC = () => {
         }
     };
 
-    const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (!file) return;
-
-        // Validate file type
-        if (file.type !== 'application/pdf') {
-            setError('Apenas arquivos PDF são permitidos');
-            setSelectedFile(null);
-            return;
-        }
-
-        // Validate file size (5MB)
-        if (file.size > 5 * 1024 * 1024) {
-            setError('O arquivo deve ter no máximo 5MB');
-            setSelectedFile(null);
-            return;
-        }
-
-        setSelectedFile(file);
-        setError(null);
-    };
-
-    const handleUpload = async () => {
-        if (!selectedFile) {
-            setError('Selecione um arquivo para enviar');
-            return;
-        }
-
-        try {
-            setLoading(true);
-            setError(null);
-            setUploadProgress(0);
-
-            const uploadedFile = await datasetService.uploadFile(selectedFile);
-            setFiles(prev => [uploadedFile, ...prev]);
-            setUploadProgress(100);
-            setSelectedFile(null);
-            
-            // Reset file input
-            const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-            if (fileInput) {
-                fileInput.value = '';
-            }
-        } catch (err) {
-            setError('Erro ao fazer upload do arquivo');
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
     return (
         <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">Upload de Datasets</h1>
-
-            {/* Upload Section */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
-                <div className="mb-4">
-                    <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
-                        Selecione um arquivo PDF
-                    </label>
-                    <div className="flex items-center gap-4">
-                        <input
-                            type="file"
-                            accept=".pdf"
-                            onChange={handleFileSelect}
-                            disabled={loading}
-                            className="block w-full text-sm text-gray-500 dark:text-gray-400
-                                file:mr-4 file:py-2 file:px-4
-                                file:rounded-full file:border-0
-                                file:text-sm file:font-semibold
-                                file:bg-blue-50 dark:file:bg-blue-900 file:text-blue-700 dark:file:text-blue-300
-                                hover:file:bg-blue-100 dark:hover:file:bg-blue-800"
-                        />
-                        <button
-                            onClick={handleUpload}
-                            disabled={!selectedFile || loading}
-                            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            {loading ? 'Enviando...' : 'Enviar'}
-                        </button>
-                    </div>
-                    {error && (
-                        <p className="mt-2 text-sm text-red-600 dark:text-red-400">{error}</p>
-                    )}
-                    {uploadProgress > 0 && (
-                        <div className="mt-4">
-                            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
-                                <div
-                                    className="bg-blue-600 h-2.5 rounded-full"
-                                    style={{ width: `${uploadProgress}%` }}
-                                ></div>
+            {loadingKnowledge ? (
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>
+                </div>
+            ) : knowledgeBase ? (
+                <>
+                    <div className="mb-8">
+                        <div className="flex justify-between items-center mb-4">
+                            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                                Base de Conhecimento
+                            </h1>
+                            <button
+                                onClick={() => setIsUploadModalOpen(true)}
+                                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                            >
+                                <DocumentPlusIcon className="h-5 w-5 mr-2" />
+                                Adicionar Arquivo
+                            </button>
+                        </div>
+                        <div className="mt-2 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                                Base de Conhecimento: {knowledgeBase.name}
+                            </h2>
+                            <p className="text-gray-600 dark:text-gray-400 mb-2">
+                                {knowledgeBase.description}
+                            </p>
+                            <div className="text-sm text-gray-500 dark:text-gray-400">
+                                Status: <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                    ${knowledgeBase.status === 'completed' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' :
+                                    knowledgeBase.status === 'processing' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' :
+                                    knowledgeBase.status === 'new' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' :
+                                    'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'}`}>
+                                    {knowledgeBase.status === 'completed' ? 'Concluído' :
+                                     knowledgeBase.status === 'processing' ? 'Processando' :
+                                     knowledgeBase.status === 'new' ? 'Novo' : 'Falhou'}
+                                </span>
                             </div>
                         </div>
-                    )}
-                </div>
-            </div>
-
-            {/* Files List */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-                <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Arquivos Enviados</h2>
-                {loading ? (
-                    <p className="text-gray-500 dark:text-gray-400">Carregando...</p>
-                ) : files.length === 0 ? (
-                    <p className="text-gray-500 dark:text-gray-400">Nenhum arquivo enviado</p>
-                ) : (
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                            <thead className="bg-gray-50 dark:bg-gray-700">
-                                <tr>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        Nome
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        Tamanho
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        Data de Upload
-                                    </th>
-                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                        Ações
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                                {files.map((file) => (
-                                    <tr key={file.id}>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="text-sm font-medium text-gray-900 dark:text-white">
-                                                {file.name}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="text-sm text-gray-500 dark:text-gray-400">
-                                                {formatFileSize(file.size)}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="text-sm text-gray-500 dark:text-gray-400">
-                                                {formatDate(file.lastModified)}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            <a
-                                                href={file.url}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300"
-                                            >
-                                                Download
-                                            </a>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
                     </div>
-                )}
-            </div>
+
+                    {/* Files List */}
+                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                        <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Arquivos Enviados</h2>
+                        {loading ? (
+                            <p className="text-gray-500 dark:text-gray-400">Carregando...</p>
+                        ) : files.length === 0 ? (
+                            <p className="text-gray-500 dark:text-gray-400">Nenhum arquivo enviado</p>
+                        ) : (
+                            <div className="overflow-x-auto">
+                                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                    <thead className="bg-gray-50 dark:bg-gray-700">
+                                        <tr>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                                Nome
+                                            </th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                                Tamanho
+                                            </th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                                Data de Upload
+                                            </th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                                Ações
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                        {files.map((file) => (
+                                            <tr key={file.id}>
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <div className="text-sm font-medium text-gray-900 dark:text-white truncate max-w-[300px]" title={file.originalName}>
+                                                        {file.originalName}
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                                                        {formatFileSize(file.size)}
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                                                        {formatDate(file.lastModified)}
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                                    <a
+                                                        href={file.url}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 inline-flex items-center"
+                                                        title="Download arquivo"
+                                                    >
+                                                        <ArrowDownTrayIcon className="h-5 w-5" />
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                    </div>
+
+                    <FileUploadModal
+                        isOpen={isUploadModalOpen}
+                        onClose={() => setIsUploadModalOpen(false)}
+                        knowledgeBaseId={knowledgeBaseId || ''}
+                        onUploadSuccess={loadFiles}
+                    />
+                </>
+            ) : (
+                <div className="text-center text-red-600 dark:text-red-400">
+                    {error}
+                </div>
+            )}
         </div>
     );
 };

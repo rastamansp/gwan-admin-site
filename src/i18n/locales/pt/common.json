@@ -13,9 +13,6 @@
   "toggleLanguage": "Alternar idioma",
   "openUserMenu": "Abrir menu do usuário",
   "openSidebar": "Abrir menu lateral",
-  "datasets": {
-    "upload": "Upload de Datasets"
-  },
   "common": {
     "closeSidebar": "Fechar menu lateral",
     "loading": "Carregando...",

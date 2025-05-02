@@ -235,3 +235,56 @@ Este projeto está sob a licença [inserir tipo de licença].
 3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
 4. Push para a branch (`git push origin feature/AmazingFeature`)
 5. Abra um Pull Request
+
+## Fluxo de Uso da Plataforma
+
+### 1. Registro e Login do Cliente
+
+#### 1.1 Registro
+- Cliente acessa a página de registro
+- Preenche formulário com:
+  - Nome
+  - Email
+  - WhatsApp
+- Sistema envia email com código de ativação
+
+#### 1.2 Ativação da Conta
+- Cliente recebe email com código de ativação
+- Digita o código na tela de verificação
+- Após ativação, é redirecionado para tela de login
+
+#### 1.3 Login
+- Cliente digita email na tela de login
+- Sistema envia código de verificação por email
+- Cliente digita código de verificação
+- Após validação, é redirecionado para o Dashboard
+
+### 2. Criação de Base de Conhecimento
+
+#### 2.1 Criação
+- Cliente clica em "Adicionar Base"
+- Preenche formulário com:
+  - Nome da base
+  - Descrição
+- Clica em "Criar"
+- É redirecionado para tela de upload de arquivo
+
+### 3. Upload de Arquivos
+
+#### 3.1 Upload
+- Cliente seleciona arquivo PDF
+- Clica em "Enviar"
+- Arquivo é adicionado à base de conhecimento
+- Sistema valida:
+  - Formato (apenas PDF)
+  - Tamanho (máximo 5MB)
+
+### 4. Processamento da Base de Conhecimento
+
+#### 4.1 Início do Processamento
+- Cliente clica em "Iniciar Processamento"
+- Sistema:
+  - Atualiza status para "processing"
+  - Envia mensagem para fila de processamento
+  - Inicia extração de conhecimento
+- Interface mostra status do processamento

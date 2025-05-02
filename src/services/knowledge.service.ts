@@ -1,24 +1,32 @@
 import axios from 'axios';
 import AuthService from './auth.service';
+import { getAuthToken } from '../utils/auth';
 
 export interface CreateKnowledgeDto {
     name: string;
     description: string;
-    fileId: string;
     userId?: string;
 }
 
-export interface KnowledgeBase extends CreateKnowledgeDto {
+export interface KnowledgeBase {
     _id: string;
-    status: 'processing' | 'completed' | 'failed';
+    userId: string;
+    name: string;
+    description: string;
+    status: 'new' | 'processing' | 'completed' | 'failed';
     error?: string;
     metadata?: {
         totalChunks?: number;
         processedChunks?: number;
         totalTokens?: number;
     };
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface CreateKnowledgeBaseDto {
+    name: string;
+    description: string;
 }
 
 export default class KnowledgeService {
@@ -39,7 +47,7 @@ export default class KnowledgeService {
     }
 
     private getHeaders() {
-        const token = this.authService.getToken();
+        const token = getAuthToken();
         return {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
@@ -53,22 +61,9 @@ export default class KnowledgeService {
         return response.data;
     }
 
-    async createKnowledge(data: Omit<CreateKnowledgeDto, 'userId'>): Promise<KnowledgeBase> {
-        const userId = this.authService.getUserId();
-        console.log('UserId obtido do AuthService:', userId);
-
-        if (!userId) {
-            throw new Error('Usuário não está autenticado');
-        }
-
-        const requestData = {
-            ...data,
-            userId
-        };
-        console.log('Dados sendo enviados para a API:', requestData);
-
-        const response = await axios.post(`${this.baseUrl}/user/knowledge`, requestData, {
-            headers: this.getHeaders()
+    async createKnowledge(data: CreateKnowledgeBaseDto): Promise<KnowledgeBase> {
+        const response = await axios.post(`${this.baseUrl}/user/knowledge`, data, {
+            headers: this.getHeaders(),
         });
         return response.data;
     }
@@ -76,6 +71,19 @@ export default class KnowledgeService {
     async deleteKnowledge(id: string): Promise<void> {
         await axios.delete(`${this.baseUrl}/user/knowledge/${id}`, {
             headers: this.getHeaders()
+        });
+    }
+
+    async getKnowledgeById(id: string): Promise<KnowledgeBase> {
+        const response = await axios.get(`${this.baseUrl}/user/knowledge/${id}`, {
+            headers: this.getHeaders()
+        });
+        return response.data;
+    }
+
+    async startProcess(id: string): Promise<void> {
+        await axios.post(`${this.baseUrl}/user/knowledge/${id}/start-process`, {}, {
+            headers: this.getHeaders(),
         });
     }
 } 

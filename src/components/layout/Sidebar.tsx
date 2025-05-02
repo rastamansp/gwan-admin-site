@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -6,9 +6,11 @@ import {
   HomeIcon,
   UserGroupIcon,
   Cog6ToothIcon,
-  DocumentArrowUpIcon,
-  BookOpenIcon
+  BookOpenIcon,
+  ChevronDownIcon,
+  ChevronUpIcon
 } from '@heroicons/react/24/outline';
+import KnowledgeBaseSidebar from '../KnowledgeBaseSidebar';
 
 interface SidebarProps {
   open: boolean;
@@ -18,14 +20,14 @@ interface SidebarProps {
 const navigation = [
   { name: 'dashboard', href: '/', icon: HomeIcon },
   { name: 'users', href: '/users', icon: UserGroupIcon },
-  { name: 'datasets.upload', href: '/datasets/upload', icon: DocumentArrowUpIcon },
-  { name: 'knowledge', href: '/knowledge', icon: BookOpenIcon },
+  { name: 'knowledge', href: '/knowledge', icon: BookOpenIcon, hasSubmenu: true },
   { name: 'settings', href: '/settings', icon: Cog6ToothIcon },
 ];
 
 export default function Sidebar({ open, setOpen }: SidebarProps) {
   const { t } = useTranslation('common');
   const location = useLocation();
+  const [expandedItems, setExpandedItems] = useState<string[]>(['knowledge']);
 
   const isActive = (path: string) => {
     if (path === '/') {
@@ -33,6 +35,77 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
     }
     return location.pathname.startsWith(path);
   };
+
+  const toggleExpand = (name: string) => {
+    setExpandedItems(prev => 
+      prev.includes(name) 
+        ? prev.filter(item => item !== name)
+        : [...prev, name]
+    );
+  };
+
+  const renderNavigation = () => (
+    <ul role="list" className="-mx-2 space-y-1">
+      {navigation.map((item) => (
+        <li key={item.name}>
+          {item.hasSubmenu ? (
+            <div>
+              <div className="flex items-center">
+                <Link
+                  to={item.href}
+                  className={`
+                    flex-1 group flex items-center gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold
+                    ${isActive(item.href)
+                      ? 'bg-gray-50 text-primary-600 dark:bg-gray-700 dark:text-primary-400'
+                      : 'text-gray-700 hover:text-primary-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-primary-400'
+                    }
+                  `}
+                >
+                  <item.icon
+                    className="h-6 w-6 shrink-0"
+                    aria-hidden="true"
+                  />
+                  {t(item.name)}
+                </Link>
+                <button
+                  onClick={() => toggleExpand(item.name)}
+                  className="p-2 text-gray-400 hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-200"
+                >
+                  {expandedItems.includes(item.name) ? (
+                    <ChevronUpIcon className="h-4 w-4" />
+                  ) : (
+                    <ChevronDownIcon className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
+              {expandedItems.includes(item.name) && (
+                <div className="ml-4 mt-1">
+                  <KnowledgeBaseSidebar />
+                </div>
+              )}
+            </div>
+          ) : (
+            <Link
+              to={item.href}
+              className={`
+                group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold
+                ${isActive(item.href)
+                  ? 'bg-gray-50 text-primary-600 dark:bg-gray-700 dark:text-primary-400'
+                  : 'text-gray-700 hover:text-primary-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-primary-400'
+                }
+              `}
+            >
+              <item.icon
+                className="h-6 w-6 shrink-0"
+                aria-hidden="true"
+              />
+              {t(item.name)}
+            </Link>
+          )}
+        </li>
+      ))}
+    </ul>
+  );
 
   return (
     <>
@@ -71,33 +144,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
                     />
                   </div>
                   <nav className="flex flex-1 flex-col">
-                    <ul role="list" className="flex flex-1 flex-col gap-y-7">
-                      <li>
-                        <ul role="list" className="-mx-2 space-y-1">
-                          {navigation.map((item) => (
-                            <li key={item.name}>
-                              <Link
-                                to={item.href}
-                                className={`
-                                  group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold
-                                  ${
-                                    isActive(item.href)
-                                      ? 'bg-gray-50 text-primary-600 dark:bg-gray-700 dark:text-primary-400'
-                                      : 'text-gray-700 hover:text-primary-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-primary-400'
-                                  }
-                                `}
-                              >
-                                <item.icon
-                                  className="h-6 w-6 shrink-0"
-                                  aria-hidden="true"
-                                />
-                                {t(item.name)}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      </li>
-                    </ul>
+                    {renderNavigation()}
                   </nav>
                 </div>
               </Dialog.Panel>
@@ -117,33 +164,7 @@ export default function Sidebar({ open, setOpen }: SidebarProps) {
             />
           </div>
           <nav className="flex flex-1 flex-col">
-            <ul role="list" className="flex flex-1 flex-col gap-y-7">
-              <li>
-                <ul role="list" className="-mx-2 space-y-1">
-                  {navigation.map((item) => (
-                    <li key={item.name}>
-                      <Link
-                        to={item.href}
-                        className={`
-                          group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold
-                          ${
-                            isActive(item.href)
-                              ? 'bg-gray-50 text-primary-600 dark:bg-gray-700 dark:text-primary-400'
-                              : 'text-gray-700 hover:text-primary-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-primary-400'
-                          }
-                        `}
-                      >
-                        <item.icon
-                          className="h-6 w-6 shrink-0"
-                          aria-hidden="true"
-                        />
-                        {t(item.name)}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            </ul>
+            {renderNavigation()}
           </nav>
         </div>
       </div>

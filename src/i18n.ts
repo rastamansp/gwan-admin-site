@@ -11,7 +11,6 @@ i18n
                     'dashboard': 'Dashboard',
                     'users': 'Usuários',
                     'settings': 'Configurações',
-                    'datasets.upload': 'Upload de Dataset',
                     'knowledge': 'Bases de Conhecimento',
 
                     // Header

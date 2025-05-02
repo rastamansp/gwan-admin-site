@@ -1,5 +1,23 @@
+import axios from 'axios';
+import env from '../config/env';
+
+interface User {
+    id: string;
+    name: string;
+    email: string;
+    whatsapp?: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+interface UpdateProfileData {
+    name: string;
+    whatsapp?: string;
+}
+
 interface UserSession {
     id: string;
+    name: string;
     email: string;
     token: string;
 }
@@ -7,24 +25,18 @@ interface UserSession {
 class AuthService {
     private static instance: AuthService;
     private userSession: UserSession | null = null;
+    private token: string | null = null;
 
     private constructor() {
-        // Tenta recuperar a sessão do localStorage ao inicializar
-        const storedToken = localStorage.getItem('token');
         const storedUser = localStorage.getItem('user');
-        if (storedToken && storedUser) {
+        if (storedUser) {
             try {
-                const userData = JSON.parse(storedUser);
-                this.userSession = {
-                    id: userData._id || userData.id,
-                    email: userData.email,
-                    token: storedToken
-                };
+                this.userSession = JSON.parse(storedUser);
             } catch (error) {
-                console.error('Erro ao carregar sessão:', error);
-                this.clearSession();
+                console.error('Error parsing stored user:', error);
             }
         }
+        this.token = localStorage.getItem('token');
     }
 
     public static getInstance(): AuthService {
@@ -34,27 +46,70 @@ class AuthService {
         return AuthService.instance;
     }
 
-    setUserSession(session: UserSession) {
-        this.userSession = session;
-        localStorage.setItem('token', session.token);
-        localStorage.setItem('user', JSON.stringify({
-            _id: session.id,
-            email: session.email
-        }));
+    public getUserSession(): UserSession | null {
+        return this.userSession;
     }
 
-    getUserId(): string | null {
-        return this.userSession?.id || null;
+    public setUserSession(user: UserSession): void {
+        this.userSession = user;
+        localStorage.setItem('user', JSON.stringify(user));
     }
 
-    getToken(): string | null {
-        return this.userSession?.token || localStorage.getItem('token');
+    public async login(email: string, password: string): Promise<{ token: string; user: User }> {
+        const response = await axios.post(`${env.API_URL}/auth/login`, { email, password });
+        const { token, user } = response.data;
+        this.token = token;
+        localStorage.setItem('token', token);
+        this.setUserSession({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            token
+        });
+        return { token, user };
     }
 
-    clearSession() {
+    public async getUserProfile(): Promise<User> {
+        if (!this.token) {
+            throw new Error('No token found');
+        }
+
+        const response = await axios.get(`${env.API_URL}/user/profile`, {
+            headers: {
+                Authorization: `Bearer ${this.token}`
+            }
+        });
+
+        return response.data;
+    }
+
+    public async updateUserProfile(data: UpdateProfileData): Promise<User> {
+        if (!this.token) {
+            throw new Error('No token found');
+        }
+
+        const response = await axios.patch(`${env.API_URL}/user/profile`, data, {
+            headers: {
+                Authorization: `Bearer ${this.token}`
+            }
+        });
+
+        return response.data;
+    }
+
+    public logout(): void {
+        this.token = null;
         this.userSession = null;
         localStorage.removeItem('token');
         localStorage.removeItem('user');
+    }
+
+    public getToken(): string | null {
+        return this.token;
+    }
+
+    public isAuthenticated(): boolean {
+        return !!this.token;
     }
 }
 

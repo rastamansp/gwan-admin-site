@@ -3,7 +3,7 @@ interface EnvConfig {
 }
 
 const env: EnvConfig = {
-  API_URL: import.meta.env.VITE_API_URL || 'https://bff.gwan.com.br',
+  API_URL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api',
 };
 
 export default env; 

@@ -10,6 +10,7 @@ import DatasetUpload from './pages/DatasetUpload';
 import KnowledgeBaseList from './pages/KnowledgeBaseList';
 import PrivateRoute from './components/PrivateRoute';
 import Layout from './components/layout/Layout';
+import MyProfile from './pages/MyProfile';
 
 // Inicializa o i18n antes de qualquer coisa
 i18n.loadNamespaces(['auth', 'common', 'dashboard', 'knowledge']).then(() => {
@@ -31,8 +32,9 @@ function App() {
           {/* Rotas protegidas */}
           <Route element={<PrivateRoute><Layout /></PrivateRoute>}>
             <Route index element={<Dashboard />} />
-            <Route path="datasets/upload" element={<DatasetUpload />} />
+            <Route path="datasets/:knowledgeBaseId/documents" element={<DatasetUpload />} />
             <Route path="knowledge" element={<KnowledgeBaseList />} />
+            <Route path="profile" element={<MyProfile />} />
           </Route>
         </Routes>
       </Router>
