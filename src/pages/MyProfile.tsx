@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { useAuth } from '../hooks/useAuth';
+import { toast } from 'react-toastify';
 import { UserCircleIcon } from '@heroicons/react/24/outline';
-import AuthService from '../services/auth.service';
 
 interface UserProfile {
     id: string;
@@ -16,200 +17,122 @@ const MyProfile: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isEditing, setIsEditing] = useState(false);
-    const [formData, setFormData] = useState({
-        name: '',
-        whatsapp: ''
-    });
-    const [saveLoading, setSaveLoading] = useState(false);
-    const authService = AuthService.getInstance();
+    const [name, setName] = useState('');
+    const [whatsapp, setWhatsapp] = useState('');
+    const { user, updateProfile } = useAuth();
 
     useEffect(() => {
-        loadProfile();
-    }, []);
-
-    const loadProfile = async () => {
-        try {
-            setLoading(true);
-            const userData = await authService.getUserProfile();
-            setProfile(userData);
-            setFormData({
-                name: userData.name,
-                whatsapp: userData.whatsapp || ''
-            });
-        } catch (err) {
-            console.error('Error loading profile:', err);
-            setError('Erro ao carregar perfil');
-        } finally {
-            setLoading(false);
+        if (user) {
+            setName(user.name);
+            setWhatsapp(user.whatsapp || '');
         }
-    };
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
+    }, [user]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            setSaveLoading(true);
-            await authService.updateUserProfile(formData);
-            await loadProfile();
+            await updateProfile({ name, whatsapp });
             setIsEditing(false);
-        } catch (err) {
-            console.error('Error updating profile:', err);
-            setError('Erro ao atualizar perfil');
-        } finally {
-            setSaveLoading(false);
+            toast.success('Perfil atualizado com sucesso!');
+        } catch (error) {
+            toast.error('Erro ao atualizar perfil. Por favor, tente novamente.');
         }
     };
 
-    if (loading) {
-        return (
-            <div className="container mx-auto px-4 py-8">
-                <div className="flex justify-center items-center h-64">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-                </div>
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="container mx-auto px-4 py-8">
-                <div className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded">
-                    {error}
-                </div>
-            </div>
-        );
+    if (!user) {
+        return null;
     }
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <div className="max-w-3xl mx-auto">
-                <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
-                    <div className="px-4 py-5 sm:p-6">
-                        <div className="flex items-center space-x-4 mb-6">
-                            <UserCircleIcon className="h-16 w-16 text-gray-400" />
-                            <div>
-                                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                                    Meu Perfil
-                                </h1>
-                                <p className="text-sm text-gray-500 dark:text-gray-400">
-                                    Gerencie suas informações pessoais
-                                </p>
-                            </div>
-                        </div>
-
+        <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <div className="px-4 py-6 sm:px-0">
+                <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg">
+                    <div className="px-4 py-5 sm:px-6">
+                        <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+                            Meu Perfil
+                        </h3>
+                    </div>
+                    <div className="border-t border-gray-200 dark:border-gray-700">
                         {isEditing ? (
-                            <form onSubmit={handleSubmit} className="space-y-6">
-                                <div>
-                                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                        Nome
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="name"
-                                        id="name"
-                                        value={formData.name}
-                                        onChange={handleInputChange}
-                                        className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 
-                                        bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white 
-                                        focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
-                                        required
-                                    />
-                                </div>
+                            <form onSubmit={handleSubmit} className="px-4 py-5 sm:p-6">
+                                <div className="grid grid-cols-6 gap-6">
+                                    <div className="col-span-6 sm:col-span-3">
+                                        <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            Nome
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="name"
+                                            id="name"
+                                            value={name}
+                                            onChange={(e) => setName(e.target.value)}
+                                            className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                                        />
+                                    </div>
 
-                                <div>
-                                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                        Email
-                                    </label>
-                                    <input
-                                        type="email"
-                                        id="email"
-                                        value={profile?.email}
-                                        disabled
-                                        className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 
-                                        bg-gray-100 dark:bg-gray-600 px-3 py-2 text-gray-500 dark:text-gray-400"
-                                    />
+                                    <div className="col-span-6 sm:col-span-3">
+                                        <label htmlFor="whatsapp" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            WhatsApp
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="whatsapp"
+                                            id="whatsapp"
+                                            value={whatsapp}
+                                            onChange={(e) => setWhatsapp(e.target.value)}
+                                            className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                                        />
+                                    </div>
                                 </div>
-
-                                <div>
-                                    <label htmlFor="whatsapp" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                        WhatsApp
-                                    </label>
-                                    <input
-                                        type="tel"
-                                        name="whatsapp"
-                                        id="whatsapp"
-                                        value={formData.whatsapp}
-                                        onChange={handleInputChange}
-                                        className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 
-                                        bg-white dark:bg-gray-700 px-3 py-2 text-gray-900 dark:text-white 
-                                        focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
-                                    />
-                                </div>
-
-                                <div className="flex justify-end space-x-3">
+                                <div className="mt-6 flex justify-end space-x-3">
                                     <button
                                         type="button"
-                                        onClick={() => {
-                                            setIsEditing(false);
-                                            setFormData({
-                                                name: profile?.name || '',
-                                                whatsapp: profile?.whatsapp || ''
-                                            });
-                                        }}
-                                        className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 
-                                        bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 
-                                        rounded-md hover:bg-gray-50 dark:hover:bg-gray-600"
+                                        onClick={() => setIsEditing(false)}
+                                        className="bg-white dark:bg-gray-700 py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                     >
                                         Cancelar
                                     </button>
                                     <button
                                         type="submit"
-                                        disabled={saveLoading}
-                                        className="px-4 py-2 text-sm font-medium text-white bg-primary-600 
-                                        border border-transparent rounded-md hover:bg-primary-700 
-                                        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 
-                                        disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                     >
-                                        {saveLoading ? 'Salvando...' : 'Salvar'}
+                                        Salvar
                                     </button>
                                 </div>
                             </form>
                         ) : (
-                            <div className="space-y-6">
-                                <div>
-                                    <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Nome</h3>
-                                    <p className="mt-1 text-sm text-gray-900 dark:text-white">{profile?.name}</p>
+                            <dl>
+                                <div className="bg-gray-50 dark:bg-gray-900 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Nome</dt>
+                                    <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
+                                        {user.name}
+                                    </dd>
                                 </div>
-
-                                <div>
-                                    <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Email</h3>
-                                    <p className="mt-1 text-sm text-gray-900 dark:text-white">{profile?.email}</p>
+                                <div className="bg-white dark:bg-gray-800 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Email</dt>
+                                    <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
+                                        {user.email}
+                                    </dd>
                                 </div>
-
-                                <div>
-                                    <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">WhatsApp</h3>
-                                    <p className="mt-1 text-sm text-gray-900 dark:text-white">{profile?.whatsapp || '-'}</p>
+                                <div className="bg-gray-50 dark:bg-gray-900 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">WhatsApp</dt>
+                                    <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
+                                        {user.whatsapp || '-'}
+                                    </dd>
                                 </div>
-
-                                <div className="flex justify-end">
-                                    <button
-                                        type="button"
-                                        onClick={() => setIsEditing(true)}
-                                        className="px-4 py-2 text-sm font-medium text-white bg-primary-600 
-                                        border border-transparent rounded-md hover:bg-primary-700 
-                                        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-                                    >
-                                        Editar
-                                    </button>
+                                <div className="bg-white dark:bg-gray-800 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                    <dt className="text-sm font-medium text-gray-500 dark:text-gray-400"></dt>
+                                    <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => setIsEditing(true)}
+                                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                        >
+                                            Editar
+                                        </button>
+                                    </dd>
                                 </div>
-                            </div>
+                            </dl>
                         )}
                     </div>
                 </div>

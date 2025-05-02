@@ -4,37 +4,29 @@ import { useTranslation } from 'react-i18next';
 import env from '../../config/env';
 import AuthFooter from '../../components/auth/AuthFooter';
 import axios from 'axios';
+import { useAuth } from '../../hooks/useAuth';
+import { toast } from 'react-toastify';
 
 const Login: React.FC = () => {
   const { t } = useTranslation(['auth']);
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    setLoading(true);
+    setIsLoading(true);
 
     try {
-      // Primeiro login apenas com email
-      await axios.post(`${env.API_URL}/auth/login`, {
-        email
-      });
-      
-      // Redirecionar para página de verificação de login
-      navigate('/auth/verify-login', { 
-        state: { 
-          email,
-          message: 'Por favor, verifique seu e-mail para continuar o processo de login.'
-        }
-      });
-    } catch (err) {
-      console.error('Erro ao fazer login:', err);
-      setError('Email não encontrado');
+      await login(email);
+      navigate('/auth/verify-login', { state: { email } });
+    } catch (error) {
+      toast.error('Erro ao enviar código de verificação. Por favor, tente novamente.');
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -53,29 +45,31 @@ const Login: React.FC = () => {
             </div>
           )}
 
-          <div>
-            <label htmlFor="email" className="sr-only">
-              {t('email')}
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              required
-              className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm dark:bg-gray-800"
-              placeholder={t('email')}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+          <div className="rounded-md shadow-sm -space-y-px">
+            <div>
+              <label htmlFor="email" className="sr-only">
+                {t('email')}
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-700 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white rounded-t-md rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder={t('email')}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
           </div>
 
           <div>
             <button
               type="submit"
-              disabled={loading}
+              disabled={isLoading}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
             >
-              {loading ? 'Entrando...' : t('login')}
+              {isLoading ? 'Entrando...' : t('login')}
             </button>
           </div>
         </form>

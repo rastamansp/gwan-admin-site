@@ -32,18 +32,17 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: 'pt', // língua padrão
-    fallbackLng: 'en',
+    lng: 'pt',
+    fallbackLng: 'pt',
     ns: ['auth', 'common', 'dashboard', 'knowledge'],
-    defaultNS: 'knowledge',
+    defaultNS: 'common',
     keySeparator: '.',
     interpolation: {
       escapeValue: false
     },
     react: {
       useSuspense: false
-    },
-    debug: true
+    }
   });
 
 export default i18n; 
