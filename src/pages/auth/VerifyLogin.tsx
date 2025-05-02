@@ -64,6 +64,8 @@ export default function VerifyLogin() {
       });
 
       console.log('Sessão do usuário armazenada com sucesso');
+      console.log('Token armazenado:', localStorage.getItem('token'));
+      console.log('Usuário armazenado:', localStorage.getItem('user'));
 
       // Redireciona para a página inicial
       console.log('Redirecionando para a página inicial...');

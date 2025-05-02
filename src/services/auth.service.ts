@@ -52,7 +52,9 @@ class AuthService {
 
     public setUserSession(user: UserSession): void {
         this.userSession = user;
+        this.token = user.token;
         localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('token', user.token);
     }
 
     public async login(email: string, password: string): Promise<{ token: string; user: User }> {
