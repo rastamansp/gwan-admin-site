@@ -10,7 +10,6 @@ import {
   MoonIcon
 } from '@heroicons/react/24/outline';
 import { removeAuthToken } from '../../utils/auth';
-import AuthService from '../../services/auth.service';
 
 interface HeaderProps {
   setSidebarOpen: (open: boolean) => void;
@@ -21,7 +20,6 @@ interface HeaderProps {
 export default function Header({ setSidebarOpen, theme, toggleTheme }: HeaderProps) {
   const { t } = useTranslation('common');
   const navigate = useNavigate();
-  const authService = AuthService.getInstance();
 
   const handleLogout = () => {
     removeAuthToken();

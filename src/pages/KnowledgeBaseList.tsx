@@ -32,10 +32,7 @@ const CreateKnowledgeModal: React.FC<CreateKnowledgeModalProps> = ({ isOpen, onC
                 name,
                 description
             });
-            await knowledgeService.createKnowledge({
-                name,
-                description
-            });
+            await knowledgeService.createKnowledgeBase(name, description);
             onSuccess();
             onClose();
         } catch (err) {
@@ -155,7 +152,7 @@ const KnowledgeBaseList: React.FC = () => {
         }
 
         try {
-            await knowledgeService.deleteKnowledge(id);
+            await knowledgeService.deleteKnowledgeBase(id);
             setKnowledgeBases(prev => prev.filter(base => base._id !== id));
         } catch (err) {
             console.error('Erro ao excluir base de conhecimento:', err);

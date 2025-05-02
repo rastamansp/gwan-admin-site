@@ -1,5 +1,5 @@
 import axios from 'axios';
-import AuthService from './auth.service';
+import env from '../config/env';
 import { getAuthToken } from '../utils/auth';
 
 export interface CreateKnowledgeDto {
@@ -10,16 +10,10 @@ export interface CreateKnowledgeDto {
 
 export interface KnowledgeBase {
     _id: string;
-    userId: string;
     name: string;
     description: string;
-    status: 'new' | 'processing' | 'completed' | 'failed';
-    error?: string;
-    metadata?: {
-        totalChunks?: number;
-        processedChunks?: number;
-        totalTokens?: number;
-    };
+    userId: string;
+    status: string;
     createdAt: string;
     updatedAt: string;
 }
@@ -29,14 +23,12 @@ export interface CreateKnowledgeBaseDto {
     description: string;
 }
 
-export default class KnowledgeService {
+class KnowledgeService {
     private static instance: KnowledgeService;
     private baseUrl: string;
-    private authService: AuthService;
 
     private constructor() {
-        this.baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-        this.authService = AuthService.getInstance();
+        this.baseUrl = env.API_URL;
     }
 
     public static getInstance(): KnowledgeService {
@@ -61,29 +53,38 @@ export default class KnowledgeService {
         return response.data;
     }
 
-    async createKnowledge(data: CreateKnowledgeBaseDto): Promise<KnowledgeBase> {
-        const response = await axios.post(`${this.baseUrl}/user/knowledge`, data, {
-            headers: this.getHeaders(),
-        });
+    async createKnowledgeBase(name: string, description: string): Promise<KnowledgeBase> {
+        const response = await axios.post(
+            `${this.baseUrl}/user/knowledge`,
+            { name, description },
+            { headers: this.getHeaders() }
+        );
         return response.data;
     }
 
-    async deleteKnowledge(id: string): Promise<void> {
+    async updateKnowledgeBase(id: string, data: { name?: string; description?: string }): Promise<KnowledgeBase> {
+        const response = await axios.patch(
+            `${this.baseUrl}/user/knowledge/${id}`,
+            data,
+            { headers: this.getHeaders() }
+        );
+        return response.data;
+    }
+
+    async deleteKnowledgeBase(id: string): Promise<void> {
         await axios.delete(`${this.baseUrl}/user/knowledge/${id}`, {
             headers: this.getHeaders()
         });
     }
 
-    async getKnowledgeById(id: string): Promise<KnowledgeBase> {
-        const response = await axios.get(`${this.baseUrl}/user/knowledge/${id}`, {
-            headers: this.getHeaders()
-        });
+    async startProcess(id: string): Promise<KnowledgeBase> {
+        const response = await axios.post(
+            `${this.baseUrl}/user/knowledge/${id}/process`,
+            {},
+            { headers: this.getHeaders() }
+        );
         return response.data;
     }
+}
 
-    async startProcess(id: string): Promise<void> {
-        await axios.post(`${this.baseUrl}/user/knowledge/${id}/start-process`, {}, {
-            headers: this.getHeaders(),
-        });
-    }
-} 
+export default KnowledgeService; 

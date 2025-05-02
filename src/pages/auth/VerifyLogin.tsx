@@ -58,6 +58,7 @@ export default function VerifyLogin() {
       // Armazena o token e dados do usuário
       authService.setUserSession({
         id: data.user._id,
+        name: data.user.name,
         email: data.user.email,
         token: data.token
       });

@@ -30,8 +30,12 @@ const DatasetUpload: React.FC = () => {
         
         try {
             setLoadingKnowledge(true);
-            const knowledge = await knowledgeService.getKnowledgeById(knowledgeBaseId);
-            setKnowledgeBase(knowledge);
+            const knowledge = await knowledgeService.listKnowledgeBases();
+            const selectedKnowledge = knowledge.find(k => k._id === knowledgeBaseId);
+            if (!selectedKnowledge) {
+                throw new Error('Knowledge base not found');
+            }
+            setKnowledgeBase(selectedKnowledge);
         } catch (err) {
             console.error('Erro ao carregar base de conhecimento:', err);
             setError('Base de conhecimento não encontrada');

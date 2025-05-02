@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { DocumentTextIcon } from '@heroicons/react/24/outline';
 import KnowledgeService, { KnowledgeBase } from '../services/knowledge.service';
 
@@ -9,7 +8,6 @@ const KnowledgeBaseSidebar: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const location = useLocation();
-    const { t } = useTranslation('common');
     const knowledgeService = KnowledgeService.getInstance();
 
     useEffect(() => {

@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { UserCircleIcon } from '@heroicons/react/24/outline';
 import AuthService from '../services/auth.service';
 
@@ -14,8 +12,6 @@ interface UserProfile {
 }
 
 const MyProfile: React.FC = () => {
-    const navigate = useNavigate();
-    const { t } = useTranslation();
     const [profile, setProfile] = useState<UserProfile | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -199,19 +195,18 @@ const MyProfile: React.FC = () => {
 
                                 <div>
                                     <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">WhatsApp</h3>
-                                    <p className="mt-1 text-sm text-gray-900 dark:text-white">
-                                        {profile?.whatsapp || 'Não informado'}
-                                    </p>
+                                    <p className="mt-1 text-sm text-gray-900 dark:text-white">{profile?.whatsapp || '-'}</p>
                                 </div>
 
                                 <div className="flex justify-end">
                                     <button
+                                        type="button"
                                         onClick={() => setIsEditing(true)}
                                         className="px-4 py-2 text-sm font-medium text-white bg-primary-600 
                                         border border-transparent rounded-md hover:bg-primary-700 
                                         focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                                     >
-                                        Editar Perfil
+                                        Editar
                                     </button>
                                 </div>
                             </div>
