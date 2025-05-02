@@ -1,21 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { toast } from 'react-toastify';
-import { UserCircleIcon } from '@heroicons/react/24/outline';
-
-interface UserProfile {
-    id: string;
-    name: string;
-    email: string;
-    whatsapp?: string;
-    createdAt: string;
-    updatedAt: string;
-}
 
 const MyProfile: React.FC = () => {
-    const [profile, setProfile] = useState<UserProfile | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
     const [isEditing, setIsEditing] = useState(false);
     const [name, setName] = useState('');
     const [whatsapp, setWhatsapp] = useState('');

@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import env from '../../config/env';
 import AuthFooter from '../../components/auth/AuthFooter';
-import axios from 'axios';
 import { useAuth } from '../../hooks/useAuth';
 import { toast } from 'react-toastify';
 
