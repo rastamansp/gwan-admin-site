@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getAuthToken } from '../utils/auth';
+import { SessionService } from './session.service';
 
 export interface DatasetFile {
     id: string;
@@ -17,9 +17,11 @@ export interface DatasetFile {
 export class DatasetService {
     private static instance: DatasetService;
     private baseUrl: string;
+    private readonly sessionService: SessionService;
 
     private constructor() {
         this.baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+        this.sessionService = SessionService.getInstance();
     }
 
     public static getInstance(): DatasetService {
@@ -30,7 +32,10 @@ export class DatasetService {
     }
 
     private getHeaders() {
-        const token = getAuthToken();
+        const token = this.sessionService.getToken();
+        if (!token) {
+            throw new Error('No authentication token available');
+        }
         return {
             'Content-Type': 'multipart/form-data',
             'Authorization': `Bearer ${token}`
@@ -38,7 +43,10 @@ export class DatasetService {
     }
 
     private getJsonHeaders() {
-        const token = getAuthToken();
+        const token = this.sessionService.getToken();
+        if (!token) {
+            throw new Error('No authentication token available');
+        }
         return {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`

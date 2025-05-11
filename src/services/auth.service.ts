@@ -24,8 +24,10 @@ export class AuthService implements IAuthService {
     private getAuthHeaders(): Record<string, string> {
         const token = this.sessionService.getToken();
         if (!token) {
+            console.error('No token available in session service');
             throw new AuthError('No authentication token available');
         }
+        console.log('Using token for request:', token.substring(0, 10) + '...');
         return { Authorization: `Bearer ${token}` };
     }
 
@@ -39,31 +41,60 @@ export class AuthService implements IAuthService {
 
     public async verifyLogin(email: string, code: string): Promise<UserSession> {
         try {
-            const response = await this.httpService.post<UserSession>('/auth/verify-login-code', {
+            console.log('Verifying login for email:', email);
+            console.log('Making request to /auth/verify-login-code with code:', code);
+            const response = await this.httpService.post<{ accessToken: string; user: User }>('/auth/verify-login-code', {
                 email,
                 code
             });
 
-            const session = response.data;
+            console.log('API Response:', JSON.stringify(response.data, null, 2));
+
+            if (!response.data || !response.data.accessToken || !response.data.user) {
+                console.error('Invalid session response from API:', response.data);
+                throw new AuthError('Invalid session response from API - missing required fields');
+            }
+
+            // Transform the API response into our UserSession format
+            const session: UserSession = {
+                id: response.data.user.id,
+                name: response.data.user.name,
+                email: response.data.user.email,
+                whatsapp: response.data.user.whatsapp,
+                token: response.data.accessToken
+            };
+
+            console.log('Login verified, setting session with token:', session.token.substring(0, 10) + '...');
             this.sessionService.setSession(session);
             return session;
         } catch (error) {
+            console.error('Login verification failed:', error);
+            if (error instanceof AuthError) {
+                throw error;
+            }
             throw new AuthError('Failed to verify login', error);
         }
     }
 
     public async logout(): Promise<void> {
         try {
+            console.log('Starting logout process...');
             const token = this.sessionService.getToken();
             if (token) {
+                console.log('Found token for logout, making logout request...');
                 await this.httpService.post('/auth/logout', null, {
                     headers: this.getAuthHeaders()
                 });
+                console.log('Logout request successful');
+            } else {
+                console.log('No token found for logout request');
             }
         } catch (error) {
             console.error('Logout request failed:', error);
         } finally {
+            console.log('Clearing session after logout');
             this.sessionService.clearSession();
+            console.log('Logout process completed');
         }
     }
 
@@ -74,6 +105,7 @@ export class AuthService implements IAuthService {
             });
             return response.data;
         } catch (error) {
+            console.error('Failed to get user profile:', error);
             throw new AuthError('Failed to get user profile', error);
         }
     }
@@ -85,9 +117,11 @@ export class AuthService implements IAuthService {
             });
 
             const updatedSession = response.data;
+            console.log('Profile updated, setting new session with token:', updatedSession.token ? updatedSession.token.substring(0, 10) + '...' : 'no token');
             this.sessionService.setSession(updatedSession);
             return updatedSession;
         } catch (error) {
+            console.error('Failed to update profile:', error);
             throw new AuthError('Failed to update profile', error);
         }
     }

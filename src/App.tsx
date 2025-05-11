@@ -8,7 +8,7 @@ import VerifyLogin from './pages/auth/VerifyLogin';
 import HomeDashboard from './pages/HomeDashboard';
 import KnowledgeBaseDatasetUpload from './pages/KnowledgeBaseDatasetUpload';
 import KnowledgeBaseManagement from './pages/KnowledgeBaseManagement';
-import PrivateRoute from './components/PrivateRoute';
+import ProtectedRoute from './components/auth/ProtectedRoute';
 import Layout from './components/layout/Layout';
 import UserProfile from './pages/UserProfile';
 
@@ -30,7 +30,7 @@ function App() {
           <Route path="/login" element={<Login />} />
 
           {/* Rotas protegidas */}
-          <Route element={<PrivateRoute><Layout /></PrivateRoute>}>
+          <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
             <Route index element={<HomeDashboard />} />
             <Route path="datasets/:knowledgeBaseId/documents" element={<KnowledgeBaseDatasetUpload />} />
             <Route path="knowledge" element={<KnowledgeBaseManagement />} />

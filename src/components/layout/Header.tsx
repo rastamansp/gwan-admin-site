@@ -9,7 +9,7 @@ import {
   SunIcon,
   MoonIcon
 } from '@heroicons/react/24/outline';
-import { removeAuthToken } from '../../utils/auth';
+import { SessionService } from '../../services/session.service';
 
 interface HeaderProps {
   setSidebarOpen: (open: boolean) => void;
@@ -20,10 +20,11 @@ interface HeaderProps {
 export default function Header({ setSidebarOpen, theme, toggleTheme }: HeaderProps) {
   const { t } = useTranslation('common');
   const navigate = useNavigate();
+  const sessionService = SessionService.getInstance();
 
   const handleLogout = () => {
-    removeAuthToken();
-    navigate('/login');
+    sessionService.clearSession();
+    navigate('/auth/login');
   };
 
   const handleProfileClick = () => {

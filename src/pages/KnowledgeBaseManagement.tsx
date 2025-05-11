@@ -121,6 +121,7 @@ const KnowledgeBaseList: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [processingFile, setProcessingFile] = useState<{ baseId: string; fileId: string } | null>(null);
     const knowledgeService = KnowledgeService.getInstance();
 
     useEffect(() => {
@@ -149,6 +150,25 @@ const KnowledgeBaseList: React.FC = () => {
             setKnowledgeBases(prev => prev.filter(base => base._id !== id));
         } catch (err) {
             setError('Erro ao excluir base de conhecimento');
+        }
+    };
+
+    const handleStartProcess = async (baseId: string, bucketFileId: string) => {
+        if (!window.confirm('Deseja iniciar o processamento deste arquivo?')) {
+            return;
+        }
+
+        try {
+            setProcessingFile({ baseId, fileId: bucketFileId });
+            console.log('Starting process for file:', { baseId, bucketFileId });
+            await knowledgeService.startProcess(baseId, bucketFileId);
+            // Recarrega a lista para atualizar o status
+            await loadKnowledgeBases();
+        } catch (err) {
+            console.error('Erro ao iniciar processamento:', err);
+            setError('Erro ao iniciar processamento do arquivo');
+        } finally {
+            setProcessingFile(null);
         }
     };
 
@@ -228,12 +248,29 @@ const KnowledgeBaseList: React.FC = () => {
                                         <Link
                                             to={`/datasets/${base._id}/documents`}
                                             className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300"
-                                            title="Gerenciar Arquivos"
+                                            title="Gerenciar Base de Conhecimento"
                                         >
                                             <DocumentPlusIcon className="h-5 w-5" />
-                                            <span className="ml-1">Gerenciar Arquivos</span>
                                         </Link>
-                                        <button onClick={() => handleDelete(base._id)} className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" title="Excluir"><TrashIcon className="h-5 w-5" /></button>
+                                        {base.rawFiles?.map((file) => (
+                                            <button
+                                                key={file.id}
+                                                onClick={() => handleStartProcess(base._id, file.id)}
+                                                disabled={processingFile?.fileId === file.id}
+                                                className={`text-yellow-600 hover:text-yellow-900 dark:text-yellow-400 dark:hover:text-yellow-300 
+                                                    ${processingFile?.fileId === file.id ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                title="Iniciar Processamento"
+                                            >
+                                                <PlayIcon className="h-5 w-5" />
+                                            </button>
+                                        ))}
+                                        <button 
+                                            onClick={() => handleDelete(base._id)} 
+                                            className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" 
+                                            title="Excluir"
+                                        >
+                                            <TrashIcon className="h-5 w-5" />
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
