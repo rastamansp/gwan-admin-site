@@ -42,8 +42,8 @@ export class AuthService implements IAuthService {
     public async verifyLogin(email: string, code: string): Promise<UserSession> {
         try {
             console.log('Verifying login for email:', email);
-            console.log('Making request to /auth/verify-login with code:', code);
-            const response = await this.httpService.post<{ accessToken: string; user: User }>('/auth/verify-login', {
+            console.log('Making request to /auth/verify-login-code with code:', code);
+            const response = await this.httpService.post<{ accessToken: string; user: User }>('/auth/verify-login-code', {
                 email,
                 code
             });
