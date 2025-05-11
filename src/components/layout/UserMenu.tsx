@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { UserCircleIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
-import AuthService from '../../services/auth.service';
+import { SessionService } from '../../services/session.service';
 
 interface UserMenuProps {
     userName: string;
@@ -10,17 +10,17 @@ interface UserMenuProps {
 
 const UserMenu: React.FC<UserMenuProps> = ({ userName }) => {
     const navigate = useNavigate();
-    const authService = AuthService.getInstance();
+    const sessionService = SessionService.getInstance();
 
     const handleLogout = () => {
-        authService.logout();
-        navigate('/login');
+        sessionService.clearSession();
+        navigate('/auth/login');
     };
 
     const handleProfileClick = () => {
-        const user = authService.getUserSession();
-        if (user) {
-            navigate(`/user/${user.id}`);
+        const session = sessionService.getSession();
+        if (session) {
+            navigate(`/profile`);
         }
     };
 

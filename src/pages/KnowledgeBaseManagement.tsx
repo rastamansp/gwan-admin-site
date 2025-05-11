@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import KnowledgeService, { KnowledgeBase, KnowledgeFile } from '../services/knowledge.service';
+import KnowledgeService, { KnowledgeBase } from '../services/knowledge.service';
 import { Dialog } from '@headlessui/react';
 import { PlusIcon, DocumentPlusIcon, PlayIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';

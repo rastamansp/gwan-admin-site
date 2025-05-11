@@ -42,8 +42,8 @@ export class AuthService implements IAuthService {
     public async verifyLogin(email: string, code: string): Promise<UserSession> {
         try {
             console.log('Verifying login for email:', email);
-            console.log('Making request to /auth/verify-login-code with code:', code);
-            const response = await this.httpService.post<{ accessToken: string; user: User }>('/auth/verify-login-code', {
+            console.log('Making request to /auth/verify-login with code:', code);
+            const response = await this.httpService.post<{ accessToken: string; user: User }>('/auth/verify-login', {
                 email,
                 code
             });
@@ -60,7 +60,7 @@ export class AuthService implements IAuthService {
                 id: response.data.user.id,
                 name: response.data.user.name,
                 email: response.data.user.email,
-                whatsapp: response.data.user.whatsapp,
+                description: response.data.user.description,
                 token: response.data.accessToken
             };
 

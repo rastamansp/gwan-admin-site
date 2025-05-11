@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import KnowledgeService, { KnowledgeBase, KnowledgeFile, BucketFile } from '../services/knowledge.service';
+import { useParams } from 'react-router-dom';
+import KnowledgeService, { KnowledgeBase, BucketFile } from '../services/knowledge.service';
 import { formatFileSize } from '../utils/format';
 import { TrashIcon, PlayIcon, ArrowDownTrayIcon, DocumentIcon } from '@heroicons/react/24/outline';
 
 const KnowledgeBaseDatasetUpload: React.FC = () => {
     const { knowledgeBaseId } = useParams<{ knowledgeBaseId: string }>();
-    const navigate = useNavigate();
     const [knowledgeBase, setKnowledgeBase] = useState<KnowledgeBase | null>(null);
     const [bucketFiles, setBucketFiles] = useState<BucketFile[]>([]);
     const [loading, setLoading] = useState(false);
