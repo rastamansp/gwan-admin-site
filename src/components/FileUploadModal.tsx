@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import { DatasetService } from '../services/dataset.service';
+import { DatasetService, DatasetFile } from '../services/dataset.service';
 
 interface FileUploadModalProps {
     isOpen: boolean;
     onClose: () => void;
     knowledgeBaseId: string;
-    onUploadSuccess: () => void;
+    onUploadSuccess: (file: DatasetFile) => void;
 }
 
 const FileUploadModal: React.FC<FileUploadModalProps> = ({ isOpen, onClose, knowledgeBaseId, onUploadSuccess }) => {
@@ -51,9 +51,9 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({ isOpen, onClose, know
             setError(null);
             setUploadProgress(0);
 
-            await datasetService.uploadFileToKnowledgeBase(selectedFile, knowledgeBaseId);
+            const uploadedFile = await datasetService.uploadFileToKnowledgeBase(selectedFile, knowledgeBaseId);
             setUploadProgress(100);
-            onUploadSuccess();
+            onUploadSuccess(uploadedFile);
             onClose();
         } catch (err) {
             setError('Erro ao fazer upload do arquivo');

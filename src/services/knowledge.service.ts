@@ -8,12 +8,22 @@ export interface CreateKnowledgeDto {
     userId?: string;
 }
 
+export interface KnowledgeFile {
+    id: string;
+    name: string;
+    size: number;
+    type: string;
+    uploadedAt: string;
+    processedFileId?: string;
+}
+
 export interface KnowledgeBase {
     _id: string;
     name: string;
     description: string;
-    userId: string;
     status: string;
+    rawFiles: KnowledgeFile[];
+    processedFiles: KnowledgeFile[];
     createdAt: string;
     updatedAt: string;
 }
@@ -62,7 +72,7 @@ class KnowledgeService {
         return response.data;
     }
 
-    async updateKnowledgeBase(id: string, data: { name?: string; description?: string }): Promise<KnowledgeBase> {
+    async updateKnowledgeBase(id: string, data: { name?: string; description?: string; bucketFileId?: string }): Promise<KnowledgeBase> {
         const response = await axios.patch(
             `${this.baseUrl}/user/knowledge/${id}`,
             data,
@@ -77,12 +87,31 @@ class KnowledgeService {
         });
     }
 
-    async startProcess(id: string): Promise<KnowledgeBase> {
+    async startProcess(id: string, bucketFileId: string): Promise<KnowledgeBase> {
         const response = await axios.post(
-            `${this.baseUrl}/user/knowledge/${id}/process`,
-            {},
+            `${this.baseUrl}/user/knowledge/${id}/start-process`,
+            { bucketFileId },
             { headers: this.getHeaders() }
         );
+        return response.data;
+    }
+
+    async addRawFile(baseId: string, file: File): Promise<KnowledgeFile> {
+        const formData = new FormData();
+        formData.append('file', file);
+        const response = await axios.post(`${this.baseUrl}/user/knowledge/${baseId}/files`, formData, {
+            headers: {
+                ...this.getHeaders(),
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response.data;
+    }
+
+    async processFile(baseId: string, fileId: string, processedFile: any): Promise<KnowledgeFile> {
+        const response = await axios.post(`${this.baseUrl}/user/knowledge/${baseId}/process-file/${fileId}`, processedFile, {
+            headers: this.getHeaders(),
+        });
         return response.data;
     }
 }

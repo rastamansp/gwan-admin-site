@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import KnowledgeService, { KnowledgeBase } from '../services/knowledge.service';
+import KnowledgeService, { KnowledgeBase, KnowledgeFile } from '../services/knowledge.service';
 import { Dialog } from '@headlessui/react';
 import { PlusIcon, DocumentPlusIcon, PlayIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
@@ -124,12 +124,6 @@ const KnowledgeBaseList: React.FC = () => {
     const knowledgeService = KnowledgeService.getInstance();
 
     useEffect(() => {
-        // Log do conteúdo do usuário no localStorage
-        const storedToken = localStorage.getItem('token');
-        const storedUser = localStorage.getItem('user');
-        console.log('Token armazenado:', storedToken);
-        console.log('Usuário armazenado:', storedUser ? JSON.parse(storedUser) : null);
-
         loadKnowledgeBases();
     }, []);
 
@@ -150,27 +144,11 @@ const KnowledgeBaseList: React.FC = () => {
         if (!window.confirm('Tem certeza que deseja excluir esta base de conhecimento?')) {
             return;
         }
-
         try {
             await knowledgeService.deleteKnowledgeBase(id);
             setKnowledgeBases(prev => prev.filter(base => base._id !== id));
         } catch (err) {
-            console.error('Erro ao excluir base de conhecimento:', err);
             setError('Erro ao excluir base de conhecimento');
-        }
-    };
-
-    const handleStartProcess = async (id: string) => {
-        try {
-            setLoading(true);
-            await knowledgeService.startProcess(id);
-            // Atualiza a lista após iniciar o processamento
-            await loadKnowledgeBases();
-        } catch (err) {
-            console.error('Erro ao iniciar processamento:', err);
-            setError('Erro ao iniciar processamento da base de conhecimento');
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -216,13 +194,11 @@ const KnowledgeBaseList: React.FC = () => {
                     Adicionar Base
                 </button>
             </div>
-
             {error && (
                 <div className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
                     {error}
                 </div>
             )}
-
             {loading ? (
                 <div className="text-center py-4">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>
@@ -232,69 +208,32 @@ const KnowledgeBaseList: React.FC = () => {
                     <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                         <thead className="bg-gray-50 dark:bg-gray-700">
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                    Nome
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                    Descrição
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                    Status
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                    Criado em
-                                </th>
-                                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                    Ações
-                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Nome</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Descrição</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Criado em</th>
+                                <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Ações</th>
                             </tr>
                         </thead>
                         <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                             {knowledgeBases.map((base) => (
                                 <tr key={base._id}>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-                                        {base.name}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                        {base.description}
-                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{base.name}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{base.description}</td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(base.status)}`}>
-                                            {getStatusText(base.status)}
-                                        </span>
+                                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(base.status)}`}>{getStatusText(base.status)}</span>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                        {new Date(base.createdAt).toLocaleDateString('pt-BR', {
-                                            day: '2-digit',
-                                            month: '2-digit',
-                                            year: 'numeric',
-                                            hour: '2-digit',
-                                            minute: '2-digit'
-                                        })}
-                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{new Date(base.createdAt).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end items-center gap-4">
                                         <Link
                                             to={`/datasets/${base._id}/documents`}
                                             className="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300"
-                                            title="Adicionar Arquivo"
+                                            title="Gerenciar Arquivos"
                                         >
                                             <DocumentPlusIcon className="h-5 w-5" />
+                                            <span className="ml-1">Gerenciar Arquivos</span>
                                         </Link>
-                                        <button
-                                            onClick={() => handleStartProcess(base._id)}
-                                            disabled={base.status === 'processing'}
-                                            className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                                            title="Iniciar Processamento"
-                                        >
-                                            <PlayIcon className="h-5 w-5" />
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(base._id)}
-                                            className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
-                                            title="Excluir"
-                                        >
-                                            <TrashIcon className="h-5 w-5" />
-                                        </button>
+                                        <button onClick={() => handleDelete(base._id)} className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" title="Excluir"><TrashIcon className="h-5 w-5" /></button>
                                     </td>
                                 </tr>
                             ))}
@@ -302,11 +241,8 @@ const KnowledgeBaseList: React.FC = () => {
                     </table>
                 </div>
             ) : (
-                <div className="text-center py-4 text-gray-500 dark:text-gray-400">
-                    Nenhuma base de conhecimento encontrada
-                </div>
+                <div className="text-center py-4 text-gray-500 dark:text-gray-400">Nenhuma base de conhecimento encontrada</div>
             )}
-
             <CreateKnowledgeModal
                 isOpen={isCreateModalOpen}
                 onClose={() => setIsCreateModalOpen(false)}

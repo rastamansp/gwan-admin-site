@@ -19,7 +19,7 @@ export default function Verify() {
     try {
       console.log('Enviando dados de verificação:', { email, code });
 
-      const response = await fetch(`${env.API_URL}/auth/verify`, {
+      const response = await fetch(`${env.API_URL}/auth/verify-code`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

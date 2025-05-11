@@ -5,12 +5,12 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import Verify from './pages/auth/Verify';
 import VerifyLogin from './pages/auth/VerifyLogin';
-import Dashboard from './pages/Dashboard';
-import DatasetUpload from './pages/DatasetUpload';
-import KnowledgeBaseList from './pages/KnowledgeBaseList';
+import HomeDashboard from './pages/HomeDashboard';
+import KnowledgeBaseDatasetUpload from './pages/KnowledgeBaseDatasetUpload';
+import KnowledgeBaseManagement from './pages/KnowledgeBaseManagement';
 import PrivateRoute from './components/PrivateRoute';
 import Layout from './components/layout/Layout';
-import MyProfile from './pages/MyProfile';
+import UserProfile from './pages/UserProfile';
 
 // Inicializa o i18n antes de qualquer coisa
 i18n.loadNamespaces(['auth', 'common', 'dashboard', 'knowledge']).then(() => {
@@ -31,10 +31,10 @@ function App() {
 
           {/* Rotas protegidas */}
           <Route element={<PrivateRoute><Layout /></PrivateRoute>}>
-            <Route index element={<Dashboard />} />
-            <Route path="datasets/:knowledgeBaseId/documents" element={<DatasetUpload />} />
-            <Route path="knowledge" element={<KnowledgeBaseList />} />
-            <Route path="profile" element={<MyProfile />} />
+            <Route index element={<HomeDashboard />} />
+            <Route path="datasets/:knowledgeBaseId/documents" element={<KnowledgeBaseDatasetUpload />} />
+            <Route path="knowledge" element={<KnowledgeBaseManagement />} />
+            <Route path="profile" element={<UserProfile />} />
           </Route>
         </Routes>
       </Router>

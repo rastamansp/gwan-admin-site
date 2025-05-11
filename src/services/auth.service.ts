@@ -1,16 +1,17 @@
-import axios from 'axios';
 import { User, UserSession, UpdateProfileData } from '../types/auth.types';
 import { IAuthService } from './interfaces/auth.service.interface';
+import { HttpService } from './http.service';
+import { SessionService } from './session.service';
+import { AuthError } from '../types/errors';
 
-const API_URL = 'http://localhost:3000/api';
-
-class AuthService implements IAuthService {
+export class AuthService implements IAuthService {
     private static instance: AuthService;
-    private token: string | null = null;
-    private userSession: UserSession | null = null;
+    private readonly httpService: HttpService;
+    private readonly sessionService: SessionService;
 
     private constructor() {
-        this.initializeFromStorage();
+        this.httpService = HttpService.getInstance();
+        this.sessionService = SessionService.getInstance();
     }
 
     public static getInstance(): AuthService {
@@ -20,103 +21,75 @@ class AuthService implements IAuthService {
         return AuthService.instance;
     }
 
-    private initializeFromStorage(): void {
-        const storedToken = localStorage.getItem('token');
-        const storedSession = localStorage.getItem('userSession');
-
-        if (storedToken) {
-            this.token = storedToken;
+    private getAuthHeaders(): Record<string, string> {
+        const token = this.sessionService.getToken();
+        if (!token) {
+            throw new AuthError('No authentication token available');
         }
-
-        if (storedSession) {
-            this.userSession = JSON.parse(storedSession);
-        }
+        return { Authorization: `Bearer ${token}` };
     }
 
     public async login(email: string): Promise<void> {
-        const response = await axios.post(`${API_URL}/auth/login`, { email });
-        return response.data;
+        try {
+            await this.httpService.post('/auth/login', { email });
+        } catch (error) {
+            throw new AuthError('Failed to initiate login', error);
+        }
     }
 
     public async verifyLogin(email: string, code: string): Promise<UserSession> {
-        const response = await axios.post(`${API_URL}/auth/verify-login`, {
-            email,
-            code
-        });
+        try {
+            const response = await this.httpService.post<UserSession>('/auth/verify-login-code', {
+                email,
+                code
+            });
 
-        const { user, token } = response.data;
-        this.setUserSession({
-            id: user._id,
-            name: user.name,
-            email: user.email,
-            whatsapp: user.whatsapp,
-            token
-        });
+            const session = response.data;
+            this.sessionService.setSession(session);
+            return session;
+        } catch (error) {
+            throw new AuthError('Failed to verify login', error);
+        }
+    }
 
-        return this.userSession!;
+    public async logout(): Promise<void> {
+        try {
+            const token = this.sessionService.getToken();
+            if (token) {
+                await this.httpService.post('/auth/logout', null, {
+                    headers: this.getAuthHeaders()
+                });
+            }
+        } catch (error) {
+            console.error('Logout request failed:', error);
+        } finally {
+            this.sessionService.clearSession();
+        }
     }
 
     public async getUserProfile(): Promise<User> {
-        if (!this.token) {
-            throw new Error('No token available');
+        try {
+            const response = await this.httpService.get<User>('/auth/profile', {
+                headers: this.getAuthHeaders()
+            });
+            return response.data;
+        } catch (error) {
+            throw new AuthError('Failed to get user profile', error);
         }
-
-        const response = await axios.get(`${API_URL}/auth/profile`, {
-            headers: { Authorization: `Bearer ${this.token}` }
-        });
-
-        return response.data;
     }
 
     public async updateProfile(data: UpdateProfileData): Promise<UserSession> {
-        if (!this.token) {
-            throw new Error('No token available');
-        }
-
-        const response = await axios.put(
-            `${API_URL}/auth/profile`,
-            data,
-            {
-                headers: { Authorization: `Bearer ${this.token}` }
-            }
-        );
-
-        const updatedUser = response.data;
-        if (this.userSession) {
-            this.setUserSession({
-                ...this.userSession,
-                name: updatedUser.name,
-                whatsapp: updatedUser.whatsapp
+        try {
+            const response = await this.httpService.put<UserSession>('/auth/profile', data, {
+                headers: this.getAuthHeaders()
             });
+
+            const updatedSession = response.data;
+            this.sessionService.setSession(updatedSession);
+            return updatedSession;
+        } catch (error) {
+            throw new AuthError('Failed to update profile', error);
         }
-
-        return this.userSession!;
-    }
-
-    public logout(): void {
-        this.token = null;
-        this.userSession = null;
-        localStorage.removeItem('token');
-        localStorage.removeItem('userSession');
-    }
-
-    public setUserSession(session: UserSession): void {
-        this.userSession = session;
-        this.token = session.token;
-        localStorage.setItem('token', session.token);
-        localStorage.setItem('userSession', JSON.stringify(session));
-    }
-
-    public getUserSession(): UserSession | null {
-        return this.userSession;
-    }
-
-    public getToken(): string | null {
-        return this.token;
-    }
-
-    public isAuthenticated(): boolean {
-        return !!this.token && !!this.userSession;
     }
 }
 
