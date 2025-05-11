@@ -2,20 +2,20 @@ export interface User {
     id: string;
     name: string;
     email: string;
-    whatsapp?: string;
+    description?: string;
     createdAt: string;
     updatedAt: string;
 }
 
 export interface UpdateProfileData {
     name: string;
-    whatsapp?: string;
+    description?: string;
 }
 
 export interface UserSession {
     id: string;
     name: string;
     email: string;
-    whatsapp?: string;
+    description?: string;
     token: string;
 } 

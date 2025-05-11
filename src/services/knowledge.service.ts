@@ -186,6 +186,15 @@ class KnowledgeService {
         console.log('Bucket files response:', response.data);
         return response.data;
     }
+
+    async deleteBucketFile(bucketFileId: string): Promise<void> {
+        console.log('Deleting bucket file:', bucketFileId);
+        await axios.delete(
+            `${this.baseUrl}/user/dataset/${bucketFileId}`,
+            { headers: this.getHeaders() }
+        );
+        console.log('Bucket file deleted successfully');
+    }
 }
 
 export default KnowledgeService; 

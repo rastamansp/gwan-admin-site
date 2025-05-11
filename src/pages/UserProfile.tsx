@@ -5,20 +5,20 @@ import { toast } from 'react-toastify';
 const MyProfile: React.FC = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [name, setName] = useState('');
-    const [whatsapp, setWhatsapp] = useState('');
+    const [description, setDescription] = useState('');
     const { user, updateProfile } = useAuth();
 
     useEffect(() => {
         if (user) {
             setName(user.name);
-            setWhatsapp(user.whatsapp || '');
+            setDescription(user.description || '');
         }
     }, [user]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await updateProfile({ name, whatsapp });
+            await updateProfile({ name, description });
             setIsEditing(false);
             toast.success('Perfil atualizado com sucesso!');
         } catch (error) {
@@ -58,15 +58,16 @@ const MyProfile: React.FC = () => {
                                     </div>
 
                                     <div className="col-span-6 sm:col-span-3">
-                                        <label htmlFor="whatsapp" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                            WhatsApp
+                                        <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            Descrição
                                         </label>
                                         <input
                                             type="text"
-                                            name="whatsapp"
-                                            id="whatsapp"
-                                            value={whatsapp}
-                                            onChange={(e) => setWhatsapp(e.target.value)}
+                                            name="description"
+                                            id="description"
+                                            value={description}
+                                            onChange={(e) => setDescription(e.target.value)}
+                                            placeholder="Descrição do usuário"
                                             className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
                                         />
                                     </div>
@@ -102,9 +103,9 @@ const MyProfile: React.FC = () => {
                                     </dd>
                                 </div>
                                 <div className="bg-gray-50 dark:bg-gray-900 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                    <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">WhatsApp</dt>
+                                    <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">Descrição</dt>
                                     <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
-                                        {user.whatsapp || '-'}
+                                        {user.description || '-'}
                                     </dd>
                                 </div>
                                 <div className="bg-white dark:bg-gray-800 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">

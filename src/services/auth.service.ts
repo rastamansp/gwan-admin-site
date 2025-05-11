@@ -112,7 +112,7 @@ export class AuthService implements IAuthService {
 
     public async updateProfile(data: UpdateProfileData): Promise<UserSession> {
         try {
-            const response = await this.httpService.put<UserSession>('/auth/profile', data, {
+            const response = await this.httpService.put<UserSession>('/profile', data, {
                 headers: this.getAuthHeaders()
             });
 
