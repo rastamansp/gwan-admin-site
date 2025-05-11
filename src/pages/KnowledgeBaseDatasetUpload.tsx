@@ -13,6 +13,7 @@ const KnowledgeBaseDatasetUpload: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [uploading, setUploading] = useState(false);
+    const [deletingFileId, setDeletingFileId] = useState<string | null>(null);
     const knowledgeService = KnowledgeService.getInstance();
 
     useEffect(() => {
@@ -57,8 +58,13 @@ const KnowledgeBaseDatasetUpload: React.FC = () => {
         try {
             await knowledgeService.addRawFile(knowledgeBaseId, selectedFile);
             setSelectedFile(null);
-            await loadKnowledgeBase();
+            await Promise.all([
+                loadKnowledgeBase(),
+                loadBucketFiles()
+            ]);
+            setError(null);
         } catch (err) {
+            console.error('Erro ao enviar arquivo:', err);
             setError('Erro ao enviar arquivo');
         } finally {
             setUploading(false);
@@ -81,6 +87,24 @@ const KnowledgeBaseDatasetUpload: React.FC = () => {
             setError('Erro ao processar arquivo');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleDeleteFile = async (file: BucketFile) => {
+        if (!window.confirm(`Tem certeza que deseja excluir o arquivo "${file.originalName}"?`)) {
+            return;
+        }
+
+        try {
+            setDeletingFileId(file.id);
+            await knowledgeService.deleteBucketFile(file.id);
+            await loadBucketFiles();
+            setError(null);
+        } catch (err) {
+            console.error('Erro ao excluir arquivo:', err);
+            setError('Erro ao excluir arquivo');
+        } finally {
+            setDeletingFileId(null);
         }
     };
 
@@ -208,6 +232,15 @@ const KnowledgeBaseDatasetUpload: React.FC = () => {
                                                 title="Download"
                                             >
                                                 <ArrowDownTrayIcon className="h-5 w-5" />
+                                            </button>
+                                            <button
+                                                onClick={() => handleDeleteFile(file)}
+                                                disabled={deletingFileId === file.id}
+                                                className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300
+                                                    disabled:opacity-50 disabled:cursor-not-allowed"
+                                                title="Excluir Arquivo"
+                                            >
+                                                <TrashIcon className="h-5 w-5" />
                                             </button>
                                         </div>
                                     </td>
