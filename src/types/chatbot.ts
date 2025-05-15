@@ -57,19 +57,8 @@ export interface CreateChatbotDto {
     description: string;
     systemPrompt: string;
     aiModel: string;
-    n8nId?: string;
-    n8nWorkflowId?: string;
-    n8nChatUrl?: string;
-    n8nChatRequireButtonClicktoStart?: boolean;
-    n8nChatTitle?: string;
-    n8nChatSubtitle?: string;
-    n8nChatInitialMessage?: string;
-    dataVector?: string;
-    dataVectorSize?: number;
-    dataVectorIndex?: string;
-    dataVectorNamespace?: string;
-    dataVectorModel?: string;
-    dataVectorEmbeddingsModel?: string;
+    contentWindowSize?: number;
+    maxTokens?: number;
 }
 
 export interface UpdateChatbotDto {
@@ -139,19 +128,8 @@ export const defaultChatbotValues: CreateChatbotDto = {
     description: '',
     systemPrompt: '',
     aiModel: 'gpt-4-turbo',
-    n8nId: '',
-    n8nWorkflowId: '',
-    n8nChatUrl: '',
-    n8nChatRequireButtonClicktoStart: false,
-    n8nChatTitle: '',
-    n8nChatSubtitle: '',
-    n8nChatInitialMessage: '',
-    dataVector: '',
-    dataVectorSize: 1536,
-    dataVectorIndex: '',
-    dataVectorNamespace: '',
-    dataVectorModel: '',
-    dataVectorEmbeddingsModel: '',
+    contentWindowSize: 12,
+    maxTokens: 2000,
 };
 
 export const mapApiChatbotToChatbot = (apiChatbot: ApiChatbot): Chatbot => {
