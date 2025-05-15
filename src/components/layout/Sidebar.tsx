@@ -8,7 +8,8 @@ import {
   Cog6ToothIcon,
   BookOpenIcon,
   ChevronDownIcon,
-  ChevronUpIcon
+  ChevronUpIcon,
+  ChatBubbleLeftRightIcon
 } from '@heroicons/react/24/outline';
 import KnowledgeBaseSidebar from '../KnowledgeBaseSidebar';
 
@@ -21,6 +22,7 @@ const navigation = [
   { name: 'dashboard', href: '/', icon: HomeIcon },
   { name: 'users', href: '/users', icon: UserGroupIcon },
   { name: 'knowledge', href: '/knowledge', icon: BookOpenIcon, hasSubmenu: true },
+  { name: 'chatbots', href: '/chatbots', icon: ChatBubbleLeftRightIcon },
   { name: 'settings', href: '/settings', icon: Cog6ToothIcon },
 ];
 

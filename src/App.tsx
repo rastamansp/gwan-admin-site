@@ -8,12 +8,13 @@ import VerifyLogin from './pages/auth/VerifyLogin';
 import HomeDashboard from './pages/HomeDashboard';
 import KnowledgeBaseDatasetUpload from './pages/KnowledgeBaseDatasetUpload';
 import KnowledgeBaseManagement from './pages/KnowledgeBaseManagement';
+import ChatbotsPage from './pages/ChatbotsPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import Layout from './components/layout/Layout';
 import UserProfile from './pages/UserProfile';
 
 // Inicializa o i18n antes de qualquer coisa
-i18n.loadNamespaces(['auth', 'common', 'dashboard', 'knowledge']).then(() => {
+i18n.loadNamespaces(['auth', 'common', 'dashboard', 'knowledge', 'chatbots']).then(() => {
   console.log('Traduções carregadas no App');
 });
 
@@ -34,6 +35,7 @@ function App() {
             <Route index element={<HomeDashboard />} />
             <Route path="datasets/:knowledgeBaseId/documents" element={<KnowledgeBaseDatasetUpload />} />
             <Route path="knowledge" element={<KnowledgeBaseManagement />} />
+            <Route path="chatbots" element={<ChatbotsPage />} />
             <Route path="profile" element={<UserProfile />} />
           </Route>
         </Routes>

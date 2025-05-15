@@ -1,0 +1,86 @@
+{
+  "title": "Chatbots",
+  "description": "Gerencie seus chatbots e suas configurações",
+  "createButton": "Criar Novo Chatbot",
+  "loading": "Carregando seus chatbots...",
+  "noChatbots": "Você ainda não criou nenhum chatbot. Clique no botão 'Criar Novo Chatbot' para criar seu primeiro assistente de IA.",
+  "edit": "Editar Chatbot",
+  "delete": "Excluir Chatbot",
+  "deleteConfirm": "Tem certeza que deseja excluir este chatbot? Esta ação não pode ser desfeita.",
+  "error": {
+    "load": "Falha ao carregar chatbots. Por favor, tente novamente mais tarde.",
+    "create": "Falha ao criar chatbot. Por favor, tente novamente.",
+    "update": "Falha ao atualizar chatbot. Por favor, tente novamente.",
+    "delete": "Falha ao excluir chatbot. Por favor, tente novamente.",
+    "updateN8n": "Falha ao atualizar configuração N8N. Por favor, tente novamente.",
+    "updateVector": "Falha ao atualizar configuração Vector. Por favor, tente novamente.",
+    "updateStatus": "Falha ao atualizar status do chatbot. Por favor, tente novamente."
+  },
+  "table": {
+    "name": "Nome",
+    "description": "Descrição",
+    "model": "Modelo",
+    "status": "Status",
+    "actions": "Ações",
+    "edit": "Editar",
+    "configureN8n": "Configurar N8N",
+    "configureVector": "Configurar Vector",
+    "delete": "Excluir",
+    "active": "Ativo",
+    "inactive": "Inativo"
+  },
+  "form": {
+    "createTitle": "Criar Novo Chatbot",
+    "editTitle": "Editar Chatbot",
+    "name": "Nome",
+    "description": "Descrição",
+    "systemPrompt": "Prompt do Sistema",
+    "model": "Modelo",
+    "required": "Este campo é obrigatório",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "close": "Fechar",
+    "submitting": "Salvando...",
+    "delete": "Excluir",
+    "deleteConfirm": "Tem certeza que deseja excluir este chatbot?",
+    "deleteSuccess": "Chatbot excluído com sucesso",
+    "deleteError": "Erro ao excluir chatbot",
+    "createSuccess": "Chatbot criado com sucesso",
+    "createError": "Erro ao criar chatbot",
+    "updateSuccess": "Chatbot atualizado com sucesso",
+    "updateError": "Erro ao atualizar chatbot"
+  },
+  "n8n": {
+    "title": "Configuração N8N",
+    "form": {
+      "n8nId": "ID do N8N",
+      "n8nWorkflowId": "ID do Workflow",
+      "n8nChatUrl": "URL do Chat",
+      "n8nChatRequireButtonClicktoStart": "Exigir clique no botão para iniciar o chat",
+      "n8nChatTitle": "Título do Chat",
+      "n8nChatSubtitle": "Subtítulo do Chat",
+      "n8nChatInitialMessage": "Mensagem Inicial"
+    },
+    "updateSuccess": "Configuração N8N atualizada com sucesso",
+    "updateError": "Erro ao atualizar configuração N8N"
+  },
+  "vector": {
+    "title": "Configuração Vector",
+    "form": {
+      "dataVector": "URL do Vector",
+      "dataVectorSize": "Tamanho do Vector",
+      "dataVectorIndex": "Índice do Vector",
+      "dataVectorNamespace": "Namespace do Vector",
+      "dataVectorModel": "Modelo do Vector",
+      "dataVectorEmbeddingsModel": "Modelo de Embeddings",
+      "vectorTopK": "Top K Resultados",
+      "vectorScoreThreshold": "Limite de Pontuação",
+      "vectorTopKMin": "Valor mínimo é 1",
+      "vectorTopKMax": "Valor máximo é 10",
+      "vectorScoreThresholdMin": "Valor mínimo é 0",
+      "vectorScoreThresholdMax": "Valor máximo é 1"
+    },
+    "updateSuccess": "Configuração Vector atualizada com sucesso",
+    "updateError": "Erro ao atualizar configuração Vector"
+  }
+} 

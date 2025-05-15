@@ -1,0 +1,86 @@
+{
+  "title": "Chatbots",
+  "description": "Manage your chatbots and their configurations",
+  "createButton": "Create New Chatbot",
+  "loading": "Loading your chatbots...",
+  "noChatbots": "You haven't created any chatbots yet. Click the 'Create New Chatbot' button to create your first AI assistant.",
+  "edit": "Edit Chatbot",
+  "delete": "Delete Chatbot",
+  "deleteConfirm": "Are you sure you want to delete this chatbot? This action cannot be undone.",
+  "error": {
+    "load": "Failed to load chatbots. Please try again later.",
+    "create": "Failed to create chatbot. Please try again.",
+    "update": "Failed to update chatbot. Please try again.",
+    "delete": "Failed to delete chatbot. Please try again.",
+    "updateN8n": "Failed to update N8N configuration. Please try again.",
+    "updateVector": "Failed to update Vector configuration. Please try again.",
+    "updateStatus": "Failed to update chatbot status. Please try again."
+  },
+  "table": {
+    "name": "Name",
+    "description": "Description",
+    "model": "Model",
+    "status": "Status",
+    "actions": "Actions",
+    "edit": "Edit",
+    "configureN8n": "Configure N8N",
+    "configureVector": "Configure Vector",
+    "delete": "Delete",
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "form": {
+    "createTitle": "Create New Chatbot",
+    "editTitle": "Edit Chatbot",
+    "name": "Name",
+    "description": "Description",
+    "systemPrompt": "System Prompt",
+    "model": "Model",
+    "required": "This field is required",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "submitting": "Saving...",
+    "delete": "Delete",
+    "deleteConfirm": "Are you sure you want to delete this chatbot?",
+    "deleteSuccess": "Chatbot deleted successfully",
+    "deleteError": "Error deleting chatbot",
+    "createSuccess": "Chatbot created successfully",
+    "createError": "Error creating chatbot",
+    "updateSuccess": "Chatbot updated successfully",
+    "updateError": "Error updating chatbot"
+  },
+  "n8n": {
+    "title": "N8N Configuration",
+    "form": {
+      "n8nId": "N8N ID",
+      "n8nWorkflowId": "Workflow ID",
+      "n8nChatUrl": "Chat URL",
+      "n8nChatRequireButtonClicktoStart": "Require button click to start chat",
+      "n8nChatTitle": "Chat Title",
+      "n8nChatSubtitle": "Chat Subtitle",
+      "n8nChatInitialMessage": "Initial Message"
+    },
+    "updateSuccess": "N8N configuration updated successfully",
+    "updateError": "Error updating N8N configuration"
+  },
+  "vector": {
+    "title": "Vector Configuration",
+    "form": {
+      "dataVector": "Vector URL",
+      "dataVectorSize": "Vector Size",
+      "dataVectorIndex": "Vector Index",
+      "dataVectorNamespace": "Vector Namespace",
+      "dataVectorModel": "Vector Model",
+      "dataVectorEmbeddingsModel": "Embeddings Model",
+      "vectorTopK": "Top K Results",
+      "vectorScoreThreshold": "Score Threshold",
+      "vectorTopKMin": "Minimum value is 1",
+      "vectorTopKMax": "Maximum value is 10",
+      "vectorScoreThresholdMin": "Minimum value is 0",
+      "vectorScoreThresholdMax": "Maximum value is 1"
+    },
+    "updateSuccess": "Vector configuration updated successfully",
+    "updateError": "Error updating Vector configuration"
+  }
+} 

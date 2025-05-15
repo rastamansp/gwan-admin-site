@@ -1,10 +1,15 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import enChatbots from './i18n/locales/en/chatbots.json';
+import ptChatbots from './i18n/locales/pt/chatbots.json';
 
 i18n
     .use(initReactI18next)
     .init({
         resources: {
+            en: {
+                chatbots: enChatbots
+            },
             pt: {
                 common: {
                     // Menu items
@@ -21,6 +26,7 @@ i18n
                     'profile': 'Perfil',
                     'logout': 'Sair'
                 },
+                chatbots: ptChatbots,
                 translation: {
                     // Knowledge Base
                     'knowledge.title': 'Bases de Conhecimento',
@@ -44,7 +50,14 @@ i18n
         fallbackLng: 'pt',
         interpolation: {
             escapeValue: false
-        }
+        },
+        ns: ['common', 'chatbots', 'translation'],
+        defaultNS: 'common'
     });
+
+// Ensure chatbots namespace is loaded
+i18n.loadNamespaces(['chatbots']).then(() => {
+    console.log('Chatbots translations loaded');
+});
 
 export default i18n; 
