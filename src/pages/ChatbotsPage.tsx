@@ -53,8 +53,8 @@ export default function ChatbotsPage() {
     
     try {
       setError(null);
-      const updatedChatbot = await chatbotService.update(selectedChatbot._id, data);
-      setChatbots(chatbots.map(c => c._id === selectedChatbot._id ? updatedChatbot : c));
+      const updatedChatbot = await chatbotService.update(selectedChatbot.id, data);
+      setChatbots(chatbots.map(c => c.id === selectedChatbot.id ? updatedChatbot : c));
       setIsFormOpen(false);
       setSelectedChatbot(null);
     } catch (error) {
@@ -68,8 +68,8 @@ export default function ChatbotsPage() {
 
     try {
       setError(null);
-      const updatedChatbot = await chatbotService.updateN8nConfig(selectedChatbot._id, data);
-      setChatbots(chatbots.map(c => c._id === selectedChatbot._id ? updatedChatbot : c));
+      const updatedChatbot = await chatbotService.updateN8nConfig(selectedChatbot.id, data);
+      setChatbots(chatbots.map(c => c.id === selectedChatbot.id ? updatedChatbot : c));
       setIsN8nConfigOpen(false);
       setSelectedChatbot(null);
     } catch (error) {
@@ -83,8 +83,8 @@ export default function ChatbotsPage() {
 
     try {
       setError(null);
-      const updatedChatbot = await chatbotService.updateVectorConfig(selectedChatbot._id, data);
-      setChatbots(chatbots.map(c => c._id === selectedChatbot._id ? updatedChatbot : c));
+      const updatedChatbot = await chatbotService.updateVectorConfig(selectedChatbot.id, data);
+      setChatbots(chatbots.map(c => c.id === selectedChatbot.id ? updatedChatbot : c));
       setIsVectorConfigOpen(false);
       setSelectedChatbot(null);
     } catch (error) {
@@ -97,8 +97,8 @@ export default function ChatbotsPage() {
     try {
       setError(null);
       const data: UpdateStatusDto = { isActive: !chatbot.isActive };
-      const updatedChatbot = await chatbotService.updateStatus(chatbot._id, data);
-      setChatbots(chatbots.map(c => c._id === chatbot._id ? updatedChatbot : c));
+      const updatedChatbot = await chatbotService.updateStatus(chatbot.id, data);
+      setChatbots(chatbots.map(c => c.id === chatbot.id ? updatedChatbot : c));
     } catch (error) {
       console.error('Error updating chatbot status:', error);
       setError(t('error.updateStatus'));
@@ -111,7 +111,7 @@ export default function ChatbotsPage() {
     try {
       setError(null);
       await chatbotService.delete(id);
-      setChatbots(chatbots.filter(c => c._id !== id));
+      setChatbots(chatbots.filter(c => c.id !== id));
     } catch (error) {
       console.error('Error deleting chatbot:', error);
       setError(t('error.delete'));
@@ -180,7 +180,7 @@ export default function ChatbotsPage() {
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
                     {chatbots.map((chatbot) => (
-                      <tr key={chatbot._id}>
+                      <tr key={chatbot.id}>
                         <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                           {chatbot.name}
                         </td>
@@ -241,7 +241,7 @@ export default function ChatbotsPage() {
                           </button>
                           <button
                             type="button"
-                            onClick={() => handleDeleteChatbot(chatbot._id)}
+                            onClick={() => handleDeleteChatbot(chatbot.id)}
                             className="text-red-600 hover:text-red-900"
                           >
                             <TrashIcon className="h-5 w-5" aria-hidden="true" />

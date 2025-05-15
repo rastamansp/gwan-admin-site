@@ -1,10 +1,39 @@
-export interface Chatbot {
-    _id: string;
+export type ChatbotStatus = 'active' | 'inactive';
+
+export interface ApiChatbot {
+    id: string;
     userId: string;
     name: string;
     description: string;
     systemPrompt: string;
     aiModel: string;
+    contentWindowSize?: number;
+    isActive: boolean;
+    n8nId?: string;
+    n8nWorkflowId?: string;
+    n8nChatUrl?: string;
+    n8nChatRequireButtonClicktoStart?: boolean;
+    n8nChatTitle?: string;
+    n8nChatSubtitle?: string;
+    n8nChatInitialMessage?: string;
+    dataVector?: string;
+    dataVectorSize?: number;
+    dataVectorIndex?: string;
+    dataVectorNamespace?: string;
+    dataVectorModel?: string;
+    dataVectorEmbeddingsModel?: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface Chatbot {
+    id: string;
+    userId: string;
+    name: string;
+    description: string;
+    systemPrompt: string;
+    aiModel: string;
+    status: ChatbotStatus;
     isActive: boolean;
     n8nId?: string;
     n8nWorkflowId?: string;
@@ -123,4 +152,15 @@ export const defaultChatbotValues: CreateChatbotDto = {
     dataVectorNamespace: '',
     dataVectorModel: '',
     dataVectorEmbeddingsModel: '',
+};
+
+export const mapApiChatbotToChatbot = (apiChatbot: ApiChatbot): Chatbot => {
+    const { id, aiModel, isActive, ...rest } = apiChatbot;
+    return {
+        id,
+        aiModel,
+        status: isActive ? 'active' : 'inactive',
+        isActive,
+        ...rest,
+    };
 }; 

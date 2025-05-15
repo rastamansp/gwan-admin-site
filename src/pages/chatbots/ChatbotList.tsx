@@ -5,7 +5,7 @@ import { PlusIcon } from '@heroicons/react/24/outline';
 import { ChatbotTable } from '../../components/modules/chatbots/ChatbotTable';
 import { ChatbotForm } from '../../components/modules/chatbots/ChatbotForm';
 import { useChatbotService } from '../../hooks/useChatbotService';
-import type { Chatbot } from '../../types/chatbot';
+import type { Chatbot, CreateChatbotDto, ChatbotStatus } from '../../types/chatbot';
 
 export default function ChatbotList() {
   const { t } = useTranslation('chatbots');
@@ -34,7 +34,7 @@ export default function ChatbotList() {
     }
   };
 
-  const handleCreate = async (data: Partial<Chatbot>) => {
+  const handleCreate = async (data: CreateChatbotDto) => {
     try {
       await chatbotService.createChatbot(data);
       setIsFormOpen(false);
@@ -45,7 +45,7 @@ export default function ChatbotList() {
     }
   };
 
-  const handleEdit = async (data: Partial<Chatbot>) => {
+  const handleEdit = async (data: CreateChatbotDto) => {
     if (!selectedChatbot) return;
     try {
       await chatbotService.updateChatbot(selectedChatbot.id, data);
@@ -58,7 +58,7 @@ export default function ChatbotList() {
     }
   };
 
-  const handleStatusChange = async (id: string, status: 'active' | 'inactive') => {
+  const handleStatusChange = async (id: string, status: ChatbotStatus) => {
     try {
       await chatbotService.changeChatbotStatus(id, status);
       loadChatbots();

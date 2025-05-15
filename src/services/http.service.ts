@@ -1,16 +1,28 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { IHttpService, HttpRequestConfig, HttpResponse } from './interfaces/http.service.interface';
+import { SessionService } from './session.service';
 
 export class HttpService implements IHttpService {
     private static instance: HttpService;
     private client: AxiosInstance;
     private baseUrl: string;
+    private sessionService: SessionService;
 
     private constructor() {
         this.baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+        this.sessionService = SessionService.getInstance();
         this.client = axios.create({
             baseURL: this.baseUrl,
             timeout: 10000,
+        });
+
+        // Add request interceptor to include auth token
+        this.client.interceptors.request.use((config) => {
+            const token = this.sessionService.getToken();
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`;
+            }
+            return config;
         });
     }
 
