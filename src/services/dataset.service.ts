@@ -76,7 +76,7 @@ export class DatasetService {
     }
 
     async listFiles(): Promise<DatasetFile[]> {
-        const response = await axios.get(`${this.baseUrl}/user/dataset/list`, {
+        const response = await axios.get(`${this.baseUrl}/dataset/files`, {
             headers: this.getJsonHeaders(),
         });
         return response.data;

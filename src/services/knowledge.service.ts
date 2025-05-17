@@ -180,7 +180,7 @@ class KnowledgeService {
     async listBucketFiles(): Promise<BucketFile[]> {
         console.log('Fetching bucket files');
         const response = await axios.get(
-            `${this.baseUrl}/user/dataset/list`,
+            `${this.baseUrl}/dataset/files`,
             { headers: this.getHeaders() }
         );
         console.log('Bucket files response:', response.data);
