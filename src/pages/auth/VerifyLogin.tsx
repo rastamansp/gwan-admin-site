@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
 
 export default function VerifyLogin() {
+  const { t } = useTranslation('auth');
   const [code, setCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const location = useLocation();
@@ -25,7 +27,7 @@ export default function VerifyLogin() {
       await login(email, code);
       navigate('/');
     } catch (error) {
-      toast.error('Código inválido. Por favor, tente novamente.');
+      toast.error(t('verificationError'));
     } finally {
       setIsLoading(false);
     }
@@ -36,17 +38,17 @@ export default function VerifyLogin() {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Verificação de Login
+            {t('verify')}
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Digite o código enviado para {email}
+            {t('enterLoginCode')}
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <label htmlFor="code" className="sr-only">
-                Código de Verificação
+                {t('verificationCode')}
               </label>
               <input
                 id="code"
@@ -54,7 +56,7 @@ export default function VerifyLogin() {
                 type="text"
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Código de Verificação"
+                placeholder={t('verificationCode')}
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
               />
@@ -67,7 +69,7 @@ export default function VerifyLogin() {
               disabled={isLoading}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              {isLoading ? 'Verificando...' : 'Verificar'}
+              {isLoading ? t('verifying', { defaultValue: 'Verificando...' }) : t('verify')}
             </button>
           </div>
         </form>

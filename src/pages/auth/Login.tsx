@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import AuthFooter from '../../components/auth/AuthFooter';
@@ -6,12 +6,20 @@ import { useAuth } from '../../hooks/useAuth';
 import { toast } from 'react-toastify';
 
 const Login: React.FC = () => {
-  const { t } = useTranslation(['auth']);
+  const { t, i18n } = useTranslation('auth');
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
+
+  // Debug logs for i18n
+  useEffect(() => {
+    console.log('Current language:', i18n.language);
+    console.log('Available languages:', i18n.languages);
+    console.log('Translation test:', t('login'));
+    console.log('Translation test (email):', t('email'));
+  }, [i18n.language, t]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +30,7 @@ const Login: React.FC = () => {
       await login(email);
       navigate('/auth/verify-login', { state: { email } });
     } catch (error) {
-      toast.error('Erro ao enviar código de verificação. Por favor, tente novamente.');
+      toast.error(t('loginError'));
     } finally {
       setIsLoading(false);
     }
@@ -67,20 +75,14 @@ const Login: React.FC = () => {
               disabled={isLoading}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
             >
-              {isLoading ? 'Entrando...' : t('login')}
+              {isLoading ? t('loggingIn', { defaultValue: 'Entrando...' }) : t('login')}
             </button>
           </div>
         </form>
 
         <div className="text-center">
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            {t('noAccount')}{' '}
-            <Link
-              to="/auth/register"
-              className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
-            >
-              {t('register')}
-            </Link>
+            {t('noAccount')} <Link to="/auth/register" className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">{t('register')}</Link>
           </p>
         </div>
       </div>

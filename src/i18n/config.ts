@@ -1,48 +1,52 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import authPt from './locales/pt/auth.json';
-import authEn from './locales/en/auth.json';
-import dashboardPt from './locales/pt/dashboard.json';
-import dashboardEn from './locales/en/dashboard.json';
-import commonPt from './locales/pt/common.json';
-import commonEn from './locales/en/common.json';
-import knowledgePt from './locales/pt/knowledge.json';
-import knowledgeEn from './locales/en/knowledge.json';
+import HttpBackend from 'i18next-http-backend';
 
-// Log das traduções carregadas
-console.log('Knowledge PT:', knowledgePt);
-console.log('Knowledge EN:', knowledgeEn);
+// Import all translation files
+import enAuth from './locales/en/auth.json';
+import ptAuth from './locales/pt/auth.json';
+import enCommon from './locales/en/common.json';
+import ptCommon from './locales/pt/common.json';
+import enDashboard from './locales/en/dashboard.json';
+import ptDashboard from './locales/pt/dashboard.json';
+import enKnowledge from './locales/en/knowledge.json';
+import ptKnowledge from './locales/pt/knowledge.json';
+import enChatbots from './locales/en/chatbots.json';
+import ptChatbots from './locales/pt/chatbots.json';
 
-const resources = {
-  pt: {
-    auth: authPt,
-    dashboard: dashboardPt,
-    common: commonPt,
-    knowledge: knowledgePt
-  },
-  en: {
-    auth: authEn,
-    dashboard: dashboardEn,
-    common: commonEn,
-    knowledge: knowledgeEn
-  }
-};
-
-i18n
-  .use(initReactI18next)
-  .init({
-    resources,
-    lng: 'pt',
-    fallbackLng: 'pt',
-    ns: ['auth', 'common', 'dashboard', 'knowledge'],
-    defaultNS: 'common',
-    keySeparator: '.',
-    interpolation: {
-      escapeValue: false
-    },
-    react: {
-      useSuspense: false
-    }
-  });
+// Initialize i18n only once
+if (!i18n.isInitialized) {
+  i18n
+    .use(initReactI18next)
+    .init({
+      resources: {
+        en: {
+          auth: enAuth,
+          common: enCommon,
+          dashboard: enDashboard,
+          knowledge: enKnowledge,
+          chatbots: enChatbots
+        },
+        pt: {
+          auth: ptAuth,
+          common: ptCommon,
+          dashboard: ptDashboard,
+          knowledge: ptKnowledge,
+          chatbots: ptChatbots
+        }
+      },
+      lng: 'pt',
+      fallbackLng: 'pt',
+      ns: ['auth', 'common', 'dashboard', 'knowledge', 'chatbots'],
+      defaultNS: 'common',
+      debug: true,
+      interpolation: {
+        escapeValue: false
+      },
+      react: {
+        useSuspense: false
+      }
+    });
+}
 
 export default i18n; 

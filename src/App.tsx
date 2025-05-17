@@ -13,11 +13,6 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import Layout from './components/layout/Layout';
 import UserProfile from './pages/UserProfile';
 
-// Inicializa o i18n antes de qualquer coisa
-i18n.loadNamespaces(['auth', 'common', 'dashboard', 'knowledge', 'chatbots']).then(() => {
-  console.log('Traduções carregadas no App');
-});
-
 function App() {
   return (
     <I18nextProvider i18n={i18n}>
