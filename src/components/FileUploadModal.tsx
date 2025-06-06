@@ -5,11 +5,11 @@ import { DatasetService, DatasetFile } from '../services/dataset.service';
 interface FileUploadModalProps {
     isOpen: boolean;
     onClose: () => void;
-    knowledgeBaseId: string;
+    datasetId: string;
     onUploadSuccess: (file: DatasetFile) => void;
 }
 
-const FileUploadModal: React.FC<FileUploadModalProps> = ({ isOpen, onClose, knowledgeBaseId, onUploadSuccess }) => {
+const FileUploadModal: React.FC<FileUploadModalProps> = ({ isOpen, onClose, datasetId, onUploadSuccess }) => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
@@ -51,7 +51,7 @@ const FileUploadModal: React.FC<FileUploadModalProps> = ({ isOpen, onClose, know
             setError(null);
             setUploadProgress(0);
 
-            const uploadedFile = await datasetService.uploadFileToKnowledgeBase(selectedFile, knowledgeBaseId);
+            const uploadedFile = await datasetService.uploadFileToKnowledgeBase(selectedFile, datasetId);
             setUploadProgress(100);
             onUploadSuccess(uploadedFile);
             onClose();

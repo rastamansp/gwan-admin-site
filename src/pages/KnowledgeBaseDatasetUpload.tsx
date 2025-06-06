@@ -23,12 +23,13 @@ const KnowledgeBaseDatasetUpload: React.FC = () => {
     }, [knowledgeBaseId]);
 
     const loadBucketFiles = async () => {
+        if (!knowledgeBaseId) return;
         try {
-            const files = await knowledgeService.listBucketFiles();
+            const files = await knowledgeService.listBucketFiles(knowledgeBaseId);
             setBucketFiles(files);
         } catch (err) {
-            console.error('Erro ao carregar arquivos do bucket:', err);
-            setError('Erro ao carregar arquivos do bucket');
+            console.error('Erro ao carregar arquivos do dataset:', err);
+            setError('Erro ao carregar arquivos do dataset');
         }
     };
 
@@ -90,13 +91,13 @@ const KnowledgeBaseDatasetUpload: React.FC = () => {
     };
 
     const handleDeleteFile = async (file: BucketFile) => {
-        if (!window.confirm(`Tem certeza que deseja excluir o arquivo "${file.originalName}"?`)) {
+        if (!knowledgeBaseId || !window.confirm(`Tem certeza que deseja excluir o arquivo "${file.originalName}"?`)) {
             return;
         }
 
         try {
             setDeletingFileId(file.id);
-            await knowledgeService.deleteBucketFile(file.id);
+            await knowledgeService.deleteBucketFile(knowledgeBaseId, file.id);
             await loadBucketFiles();
             setError(null);
         } catch (err) {

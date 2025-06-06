@@ -150,14 +150,13 @@ class KnowledgeService {
         return response.data;
     }
 
-    async addRawFile(baseId: string, file: File): Promise<KnowledgeFile> {
+    async addRawFile(datasetId: string, file: File): Promise<KnowledgeFile> {
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('knowledgeBaseId', baseId);
 
-        console.log('Uploading file to knowledge base:', baseId);
+        console.log('Uploading file to dataset:', datasetId);
         const response = await axios.post(
-            `${this.baseUrl}/user/dataset/${baseId}/documents`,
+            `${this.baseUrl}/user/datasets/${datasetId}/documents`,
             formData,
             {
                 headers: {
@@ -177,23 +176,23 @@ class KnowledgeService {
         return response.data;
     }
 
-    async listBucketFiles(): Promise<BucketFile[]> {
-        console.log('Fetching bucket files');
+    async listBucketFiles(datasetId: string): Promise<BucketFile[]> {
+        console.log('Fetching dataset files');
         const response = await axios.get(
-            `${this.baseUrl}/dataset/files`,
+            `${this.baseUrl}/user/datasets/${datasetId}/documents`,
             { headers: this.getHeaders() }
         );
-        console.log('Bucket files response:', response.data);
+        console.log('Dataset files response:', response.data);
         return response.data;
     }
 
-    async deleteBucketFile(bucketFileId: string): Promise<void> {
-        console.log('Deleting bucket file:', bucketFileId);
+    async deleteBucketFile(datasetId: string, documentId: string): Promise<void> {
+        console.log('Deleting dataset file:', documentId);
         await axios.delete(
-            `${this.baseUrl}/user/dataset/${bucketFileId}`,
+            `${this.baseUrl}/user/datasets/${datasetId}/documents/${documentId}`,
             { headers: this.getHeaders() }
         );
-        console.log('Bucket file deleted successfully');
+        console.log('Dataset file deleted successfully');
     }
 }
 

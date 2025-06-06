@@ -62,7 +62,7 @@ cp .env.example .env
 O projeto utiliza as seguintes variáveis de ambiente:
 
 ```env
-VITE_API_URL=http://localhost:3000  # URL da API backend
+VITE_API_URL=http://localhost:3000/api  # URL base da API (incluindo o prefixo /api)
 ```
 
 Você pode criar diferentes arquivos para diferentes ambientes:
