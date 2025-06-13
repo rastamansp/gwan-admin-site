@@ -14,21 +14,16 @@ export default defineConfig({
     },
   },
   build: {
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom')) {
-              return 'react';
-            }
-            return 'vendor';
-          }
-          if (id.includes('/src/modules/')) {
-            const dirs = id.split('/src/modules/')[1].split('/');
-            return dirs[0];
-          }
-        },
-      },
-    },
+    target: 'es2020',
+    minify: 'esbuild',
+    sourcemap: false,
+    chunkSizeWarningLimit: 1000,
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom'],
+    force: true,
+  },
+  define: {
+    __DEV__: false,
   },
 })
