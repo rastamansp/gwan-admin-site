@@ -10,6 +10,8 @@ import KnowledgeBaseDatasetUpload from './pages/KnowledgeBaseDatasetUpload';
 import KnowledgeBaseManagement from './pages/KnowledgeBaseManagement';
 import KnowledgeBaseSearch from './pages/KnowledgeBaseSearch';
 import ChatbotsPage from './pages/ChatbotsPage';
+import { CrawlingListPage } from './pages/CrawlingListPage';
+import { CrawlingDetailPage } from './pages/CrawlingDetailPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import Layout from './components/layout/Layout';
 import UserProfile from './pages/UserProfile';
@@ -33,6 +35,8 @@ function App() {
             <Route path="datasets/:knowledgeBaseId/search" element={<KnowledgeBaseSearch />} />
             <Route path="knowledge" element={<KnowledgeBaseManagement />} />
             <Route path="chatbots" element={<ChatbotsPage />} />
+            <Route path="crawling" element={<CrawlingListPage />} />
+            <Route path="crawling/:id" element={<CrawlingDetailPage />} />
             <Route path="profile" element={<UserProfile />} />
           </Route>
         </Routes>

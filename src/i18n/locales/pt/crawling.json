@@ -1,0 +1,49 @@
+{
+    "title": "Crawlings",
+    "subtitle": "Gerencie suas requisições de crawling de dados",
+    "newCrawling": "Novo Crawling",
+    "createCrawling": "Criar Crawling",
+    "viewDetails": "Ver Detalhes",
+    "back": "Voltar",
+    "refresh": "Atualizar",
+    "tryAgain": "Tentar novamente",
+    "noCrawlings": "Nenhum crawling encontrado",
+    "noCrawlingsDescription": "Comece criando seu primeiro crawling.",
+    "errorLoading": "Erro ao carregar crawlings",
+    "errorLoadingDescription": "Ocorreu um erro ao carregar a lista de crawlings.",
+    "errorLoadingDetail": "Erro ao carregar crawling",
+    "errorLoadingDetailDescription": "Ocorreu um erro ao carregar os detalhes do crawling.",
+    "basicInfo": "Informações Básicas",
+    "requestParams": "Parâmetros da Requisição",
+    "result": "Resultado",
+    "error": "Erro",
+    "url": "URL",
+    "status": "Status",
+    "formats": "Formatos",
+    "createdAt": "Criado em",
+    "updatedAt": "Atualizado em",
+    "requestedFormats": "Formatos solicitados",
+    "jsonSchema": "JSON Schema",
+    "processingError": "Erro no processamento",
+    "modal": {
+        "title": "Novo Crawling",
+        "urlLabel": "URL *",
+        "urlPlaceholder": "https://exemplo.com",
+        "formatsLabel": "Formatos *",
+        "jsonSchemaLabel": "JSON Schema (opcional)",
+        "jsonSchemaPlaceholder": "Insira o JSON Schema se necessário...",
+        "cancel": "Cancelar",
+        "create": "Criar",
+        "creating": "Criando..."
+    },
+    "status": {
+        "pending": "Pendente",
+        "processing": "Processando",
+        "completed": "Concluído",
+        "failed": "Falhou"
+    },
+    "formats": {
+        "json": "JSON",
+        "markdown": "Markdown"
+    }
+}

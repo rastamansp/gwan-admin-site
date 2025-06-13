@@ -224,6 +224,33 @@ Os componentes seguem uma estrutura modular:
 - `components/layout/` - Componentes estruturais (Header, Sidebar)
 - `components/modules/` - Componentes específicos de funcionalidades
 
+## 🕷️ Crawling de Dados
+
+O painel possui um módulo completo para gerenciamento de crawlings de dados, permitindo que o usuário crie, visualize e acompanhe requisições de extração de dados de URLs externas.
+
+### Funcionalidades
+
+- **Listagem de Crawlings:** Visualize todas as requisições de crawling realizadas, com status, formato e data.
+- **Criação de Crawling:** Crie uma nova requisição informando a URL, formatos desejados (JSON, Markdown) e, opcionalmente, um JSON Schema.
+- **Detalhe do Crawling:** Veja o resultado do crawling, incluindo o conteúdo extraído em Markdown e os metadados retornados pela API.
+- **Paginação:** Navegue entre múltiplas páginas de resultados.
+- **Tratamento de Erros e Estados:** Interface amigável para estados de carregamento, erro e vazio.
+
+### Como Usar
+
+1. **Acesse o menu "Crawling"** no painel lateral.
+2. Clique em **"+ Novo Crawling"** para abrir o modal de criação.
+3. Preencha a URL, selecione os formatos desejados e, se necessário, insira um JSON Schema.
+4. Após criar, acompanhe o status na listagem.
+5. Clique em qualquer item da lista para ver detalhes e o resultado do crawling.
+
+### Observações Técnicas
+
+- O gerenciamento de dados é feito com [TanStack Query (React Query)](https://tanstack.com/query/latest).
+- O modal de criação utiliza [React Hook Form](https://react-hook-form.com/) e [Zod](https://zod.dev/) para validação.
+- O campo de URL foi ajustado para garantir contraste e acessibilidade (`text-gray-900`).
+- O sistema trata diferentes formatos de resposta da API para garantir robustez e compatibilidade.
+
 ## 📝 Licença
 
 Este projeto está sob a licença [inserir tipo de licença].

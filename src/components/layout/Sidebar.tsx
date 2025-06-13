@@ -9,7 +9,8 @@ import {
   BookOpenIcon,
   ChevronDownIcon,
   ChevronUpIcon,
-  ChatBubbleLeftRightIcon
+  ChatBubbleLeftRightIcon,
+  GlobeAltIcon
 } from '@heroicons/react/24/outline';
 import KnowledgeBaseSidebar from '../KnowledgeBaseSidebar';
 
@@ -23,6 +24,7 @@ const navigation = [
   { name: 'users', href: '/users', icon: UserGroupIcon },
   { name: 'knowledge', href: '/knowledge', icon: BookOpenIcon, hasSubmenu: true },
   { name: 'chatbots', href: '/chatbots', icon: ChatBubbleLeftRightIcon },
+  { name: 'crawling', href: '/crawling', icon: GlobeAltIcon },
   { name: 'settings', href: '/settings', icon: Cog6ToothIcon },
 ];
 

@@ -1,6 +1,9 @@
 {
   "dashboard": "Dashboard",
   "users": "Usuários",
+  "knowledge": "Base de Conhecimento",
+  "chatbots": "Chatbots",
+  "crawling": "Crawling",
   "settings": "Configurações",
   "profile": "Perfil",
   "notifications": "Notificações",
@@ -19,4 +22,4 @@
     "error": "Erro",
     "success": "Sucesso"
   }
-} 
+}
