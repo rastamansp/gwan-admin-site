@@ -77,6 +77,7 @@ export class HttpService implements IHttpService {
         return {
             data: response.data,
             status: response.status,
+            statusText: response.statusText,
             headers: response.headers as Record<string, string>,
         };
     }
@@ -93,6 +94,11 @@ export class HttpService implements IHttpService {
 
     async put<T>(url: string, data?: unknown, config?: HttpRequestConfig): Promise<HttpResponse<T>> {
         const response = await this.client.put<T>(url, data, this.transformConfig(config));
+        return this.transformResponse(response);
+    }
+
+    async patch<T>(url: string, data?: unknown, config?: HttpRequestConfig): Promise<HttpResponse<T>> {
+        const response = await this.client.patch<T>(url, data, this.transformConfig(config));
         return this.transformResponse(response);
     }
 

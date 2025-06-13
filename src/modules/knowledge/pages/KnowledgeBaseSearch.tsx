@@ -240,7 +240,6 @@ const KnowledgeBaseSearch: React.FC = () => {
     const handleSaveEdit = async (content: string, enable: boolean) => {
         if (!editingResult) return;
         
-        setIsSaving(true);
         try {
             // TODO: Implementar chamada à API
             console.log('Salvando edição:', { id: editingResult.id, content, enable });
@@ -253,7 +252,6 @@ const KnowledgeBaseSearch: React.FC = () => {
                 )
             );
         } finally {
-            setIsSaving(false);
             setEditingResult(null);
         }
     };

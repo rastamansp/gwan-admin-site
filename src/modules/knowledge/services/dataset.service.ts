@@ -1,7 +1,4 @@
-import axios from 'axios';
-import { SessionService } from './session.service';
-import env from '../config/env';
-import logger from './logger.service';
+import { HttpService } from '../../../services/http.service';
 
 export interface DatasetFile {
     id: string;
@@ -18,12 +15,10 @@ export interface DatasetFile {
 
 export class DatasetService {
     private static instance: DatasetService;
-    private baseUrl: string;
-    private readonly sessionService: SessionService;
+    private readonly httpService: HttpService;
 
     private constructor() {
-        this.baseUrl = env.API_URL;
-        this.sessionService = SessionService.getInstance();
+        this.httpService = HttpService.getInstance();
     }
 
     public static getInstance(): DatasetService {
@@ -33,30 +28,8 @@ export class DatasetService {
         return DatasetService.instance;
     }
 
-    private getHeaders() {
-        const token = this.sessionService.getToken();
-        if (!token) {
-            throw new Error('No authentication token available');
-        }
-        return {
-            'Content-Type': 'multipart/form-data',
-            'Authorization': `Bearer ${token}`
-        };
-    }
-
-    private getJsonHeaders() {
-        const token = this.sessionService.getToken();
-        if (!token) {
-            throw new Error('No authentication token available');
-        }
-        return {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        };
-    }
-
     async uploadFile(file: File, datasetId: string): Promise<DatasetFile> {
-        logger.info('Iniciando upload de arquivo', {
+        console.log('Iniciando upload de arquivo', {
             service: 'dataset',
             operation: 'uploadFile',
             datasetId,
@@ -69,11 +42,9 @@ export class DatasetService {
         formData.append('file', file);
 
         try {
-            const response = await axios.post(`${this.baseUrl}/user/datasets/${datasetId}/documents`, formData, {
-                headers: this.getHeaders(),
-            });
+            const response = await this.httpService.post<DatasetFile>(`/user/datasets/${datasetId}/documents`, formData);
 
-            logger.info('Upload de arquivo concluído com sucesso', {
+            console.log('Upload de arquivo concluído com sucesso', {
                 service: 'dataset',
                 operation: 'uploadFile',
                 datasetId,
@@ -82,18 +53,13 @@ export class DatasetService {
 
             return response.data;
         } catch (error) {
-            logger.error('Erro ao fazer upload de arquivo', error as Error, {
-                service: 'dataset',
-                operation: 'uploadFile',
-                datasetId,
-                fileName: file.name
-            });
+            console.error('Erro ao fazer upload de arquivo', error);
             throw error;
         }
     }
 
     async uploadFileToKnowledgeBase(file: File, datasetId: string): Promise<DatasetFile> {
-        logger.info('Iniciando upload de arquivo para base de conhecimento', {
+        console.log('Iniciando upload de arquivo para base de conhecimento', {
             service: 'dataset',
             operation: 'uploadFileToKnowledgeBase',
             datasetId,
@@ -106,11 +72,9 @@ export class DatasetService {
         formData.append('file', file);
 
         try {
-            const response = await axios.post(`${this.baseUrl}/user/datasets/${datasetId}/documents`, formData, {
-                headers: this.getHeaders(),
-            });
+            const response = await this.httpService.post<DatasetFile>(`/user/datasets/${datasetId}/documents`, formData);
 
-            logger.info('Upload de arquivo para base de conhecimento concluído', {
+            console.log('Upload de arquivo para base de conhecimento concluído', {
                 service: 'dataset',
                 operation: 'uploadFileToKnowledgeBase',
                 datasetId,
@@ -119,29 +83,22 @@ export class DatasetService {
 
             return response.data;
         } catch (error) {
-            logger.error('Erro ao fazer upload de arquivo para base de conhecimento', error as Error, {
-                service: 'dataset',
-                operation: 'uploadFileToKnowledgeBase',
-                datasetId,
-                fileName: file.name
-            });
+            console.error('Erro ao fazer upload de arquivo para base de conhecimento', error);
             throw error;
         }
     }
 
     async listFiles(datasetId: string): Promise<DatasetFile[]> {
-        logger.info('Listando arquivos do dataset', {
+        console.log('Listando arquivos do dataset', {
             service: 'dataset',
             operation: 'listFiles',
             datasetId
         });
 
         try {
-            const response = await axios.get(`${this.baseUrl}/user/datasets/${datasetId}/documents`, {
-                headers: this.getJsonHeaders(),
-            });
+            const response = await this.httpService.get<DatasetFile[]>(`/user/datasets/${datasetId}/documents`);
 
-            logger.info('Listagem de arquivos concluída', {
+            console.log('Listagem de arquivos concluída', {
                 service: 'dataset',
                 operation: 'listFiles',
                 datasetId,
@@ -150,17 +107,13 @@ export class DatasetService {
 
             return response.data;
         } catch (error) {
-            logger.error('Erro ao listar arquivos do dataset', error as Error, {
-                service: 'dataset',
-                operation: 'listFiles',
-                datasetId
-            });
+            console.error('Erro ao listar arquivos do dataset', error);
             throw error;
         }
     }
 
     async deleteFile(datasetId: string, documentId: string): Promise<void> {
-        logger.info('Iniciando exclusão de arquivo', {
+        console.log('Iniciando exclusão de arquivo', {
             service: 'dataset',
             operation: 'deleteFile',
             datasetId,
@@ -168,23 +121,16 @@ export class DatasetService {
         });
 
         try {
-            await axios.delete(`${this.baseUrl}/user/datasets/${datasetId}/documents/${documentId}`, {
-                headers: this.getJsonHeaders(),
-            });
+            await this.httpService.delete(`/user/datasets/${datasetId}/documents/${documentId}`);
 
-            logger.info('Arquivo excluído com sucesso', {
+            console.log('Arquivo excluído com sucesso', {
                 service: 'dataset',
                 operation: 'deleteFile',
                 datasetId,
                 documentId
             });
         } catch (error) {
-            logger.error('Erro ao excluir arquivo', error as Error, {
-                service: 'dataset',
-                operation: 'deleteFile',
-                datasetId,
-                documentId
-            });
+            console.error('Erro ao excluir arquivo', error);
             throw error;
         }
     }

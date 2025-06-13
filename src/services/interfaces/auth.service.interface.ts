@@ -1,4 +1,4 @@
-import { User, UserSession, UpdateProfileData } from '../../types/auth.types';
+import { User, UserSession, UpdateProfileData } from '../../modules/auth/types/auth.types';
 
 export interface IAuthService {
     // Authentication methods

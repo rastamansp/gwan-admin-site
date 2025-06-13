@@ -1,4 +1,4 @@
-import { UserSession } from '../types/auth.types';
+import { UserSession } from '../modules/auth/types/auth.types';
 import { ISessionService } from './interfaces/session.service.interface';
 
 export class SessionService implements ISessionService {
