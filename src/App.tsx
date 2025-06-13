@@ -8,6 +8,7 @@ import VerifyLogin from './pages/auth/VerifyLogin';
 import HomeDashboard from './pages/HomeDashboard';
 import KnowledgeBaseDatasetUpload from './pages/KnowledgeBaseDatasetUpload';
 import KnowledgeBaseManagement from './pages/KnowledgeBaseManagement';
+import KnowledgeBaseSearch from './pages/KnowledgeBaseSearch';
 import ChatbotsPage from './pages/ChatbotsPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import Layout from './components/layout/Layout';
@@ -29,6 +30,7 @@ function App() {
           <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
             <Route index element={<HomeDashboard />} />
             <Route path="datasets/:knowledgeBaseId/documents" element={<KnowledgeBaseDatasetUpload />} />
+            <Route path="datasets/:knowledgeBaseId/search" element={<KnowledgeBaseSearch />} />
             <Route path="knowledge" element={<KnowledgeBaseManagement />} />
             <Route path="chatbots" element={<ChatbotsPage />} />
             <Route path="profile" element={<UserProfile />} />

@@ -47,14 +47,40 @@ export interface BucketFile {
     status: string;
 }
 
-class KnowledgeService {
+export interface SimilarResult {
+    id: string;
+    content: string;
+    enable: boolean;
+    meta: {
+        userId: string;
+        userName: string;
+        userEmail: string;
+        fileName: string;
+        fileId: string;
+        knowledgeBaseId: string;
+        knowledgeBaseName: string;
+        markdownPath: string;
+        processedAt: string;
+        bucketName: string;
+        originalFileName: string;
+        chunkIndex: number;
+        totalChunks: number;
+    };
+}
+
+export class KnowledgeService {
     private static instance: KnowledgeService;
     private baseUrl: string;
+    private headers: HeadersInit;
     private readonly sessionService: SessionService;
 
     private constructor() {
         this.baseUrl = env.API_URL;
         this.sessionService = SessionService.getInstance();
+        this.headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        };
     }
 
     public static getInstance(): KnowledgeService {
@@ -193,6 +219,38 @@ class KnowledgeService {
             { headers: this.getHeaders() }
         );
         console.log('Dataset file deleted successfully');
+    }
+
+    async findSimilar(knowledgeBaseId: string, text: string, limit: number = 5): Promise<SimilarResult[]> {
+        console.log('Finding similar content:', { knowledgeBaseId, text, limit });
+        const response = await axios.post(
+            `${this.baseUrl}/user/knowledge/${knowledgeBaseId}/similar`,
+            { text, limit },
+            { headers: this.getHeaders() }
+        );
+        console.log('Similar content response:', response.data);
+        return response.data;
+    }
+
+    async updateChunkStatus(knowledgeBaseId: string, chunkId: string, enable: boolean): Promise<void> {
+        console.log('Atualizando status do chunk:', { knowledgeBaseId, chunkId, enable });
+        await axios.patch(
+            `${this.baseUrl}/user/knowledge/${knowledgeBaseId}/chunks/${chunkId}/status`,
+            { enable },
+            { headers: this.getHeaders() }
+        );
+    }
+
+    async deleteChunk(knowledgeBaseId: string, chunkId: string): Promise<void> {
+        const response = await fetch(`${this.baseUrl}/user/knowledge/${knowledgeBaseId}/chunks/${chunkId}`, {
+            method: 'DELETE',
+            headers: this.headers,
+        });
+
+        if (!response.ok) {
+            const error = await response.json().catch(() => ({}));
+            throw new Error(error.message || 'Erro ao excluir chunk');
+        }
     }
 }
 

@@ -1,11 +1,48 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import KnowledgeService, { KnowledgeBase, BucketFile } from '../services/knowledge.service';
 import { formatFileSize } from '../utils/format';
-import { TrashIcon, PlayIcon, ArrowDownTrayIcon, DocumentIcon } from '@heroicons/react/24/outline';
+import { TrashIcon, PlayIcon, ArrowDownTrayIcon, DocumentIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+
+// Tipos de arquivo permitidos
+const ALLOWED_FILE_TYPES = [
+    // PDF
+    'application/pdf',
+    // Documentos do Office
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // DOCX
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // XLSX
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation', // PPTX
+    // Markdown
+    'text/markdown',
+    'text/x-markdown',
+    // AsciiDoc
+    'text/asciidoc',
+    'text/x-asciidoc',
+    // HTML
+    'text/html',
+    'application/xhtml+xml',
+    // CSV
+    'text/csv',
+    'application/csv',
+    // Imagens
+    'image/png',
+    'image/jpeg',
+    'image/jpg',
+    'image/tiff',
+    'image/bmp',
+    'image/webp'
+];
+
+// Extensões permitidas para validação adicional
+const ALLOWED_EXTENSIONS = [
+    '.pdf', '.docx', '.xlsx', '.pptx', '.md', '.markdown', 
+    '.adoc', '.asciidoc', '.html', '.htm', '.xhtml', '.csv',
+    '.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.webp'
+];
 
 const KnowledgeBaseDatasetUpload: React.FC = () => {
     const { knowledgeBaseId } = useParams<{ knowledgeBaseId: string }>();
+    const navigate = useNavigate();
     const [knowledgeBase, setKnowledgeBase] = useState<KnowledgeBase | null>(null);
     const [bucketFiles, setBucketFiles] = useState<BucketFile[]>([]);
     const [loading, setLoading] = useState(false);
@@ -46,9 +83,40 @@ const KnowledgeBaseDatasetUpload: React.FC = () => {
         }
     };
 
+    const validateFile = (file: File): string | null => {
+        // Verificar tipo MIME
+        if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+            // Verificar extensão como fallback
+            const extension = '.' + file.name.split('.').pop()?.toLowerCase();
+            if (!ALLOWED_EXTENSIONS.includes(extension)) {
+                return 'Tipo de arquivo não suportado. Formatos aceitos: PDF, DOCX, XLSX, PPTX, Markdown, AsciiDoc, HTML, CSV, PNG, JPEG, TIFF, BMP, WEBP';
+            }
+        }
+
+        // Verificar tamanho (máximo 50MB)
+        const maxSize = 50 * 1024 * 1024; // 50MB
+        if (file.size > maxSize) {
+            return 'Arquivo muito grande. Tamanho máximo permitido: 50MB';
+        }
+
+        return null;
+    };
+
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
-            setSelectedFile(e.target.files[0]);
+            const file = e.target.files[0];
+            const validationError = validateFile(file);
+            
+            if (validationError) {
+                setError(validationError);
+                setSelectedFile(null);
+                // Limpar o input
+                e.target.value = '';
+                return;
+            }
+            
+            setSelectedFile(file);
+            setError(null);
         }
     };
 
@@ -108,6 +176,12 @@ const KnowledgeBaseDatasetUpload: React.FC = () => {
         }
     };
 
+    const handleNavigateToSearch = () => {
+        if (knowledgeBaseId) {
+            navigate(`/datasets/${knowledgeBaseId}/search`);
+        }
+    };
+
     if (!knowledgeBase) {
         return <div className="text-center py-8 text-gray-500 dark:text-gray-400">Carregando base de conhecimento...</div>;
     }
@@ -117,9 +191,18 @@ const KnowledgeBaseDatasetUpload: React.FC = () => {
             <div className="mb-8">
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{knowledgeBase.name}</h1>
                 <p className="text-gray-600 dark:text-gray-400 mb-2">{knowledgeBase.description}</p>
-                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(knowledgeBase.status)}`}>
-                    {getStatusText(knowledgeBase.status)}
-                </span>
+                <div className="flex items-center gap-4">
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(knowledgeBase.status)}`}>
+                        {getStatusText(knowledgeBase.status)}
+                    </span>
+                    <button
+                        onClick={handleNavigateToSearch}
+                        className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                    >
+                        <MagnifyingGlassIcon className="h-4 w-4 mr-1" />
+                        Buscar Conhecimento
+                    </button>
+                </div>
             </div>
 
             {error && <div className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{error}</div>}
@@ -132,6 +215,7 @@ const KnowledgeBaseDatasetUpload: React.FC = () => {
                             type="file"
                             onChange={handleFileChange}
                             disabled={uploading}
+                            accept={ALLOWED_FILE_TYPES.join(',')}
                             className="block w-full text-sm text-gray-500 dark:text-gray-400
                                 file:mr-4 file:py-2 file:px-4
                                 file:rounded-md file:border-0
@@ -152,6 +236,13 @@ const KnowledgeBaseDatasetUpload: React.FC = () => {
                             </button>
                         )}
                     </div>
+                </div>
+
+                {/* Informações sobre tipos de arquivo aceitos */}
+                <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md dark:bg-blue-900/50 dark:border-blue-800">
+                    <p className="text-sm text-blue-700 dark:text-blue-300">
+                        <strong>Tipos de arquivo aceitos:</strong> PDF, DOCX, XLSX, PPTX, Markdown, AsciiDoc, HTML, CSV, PNG, JPEG, TIFF, BMP, WEBP (máximo 50MB)
+                    </p>
                 </div>
 
                 <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-lg">

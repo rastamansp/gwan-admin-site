@@ -10,14 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@headlessui/react": "^2.2.2",
-    "@heroicons/react": "^2.2.0",
+    "@headlessui/react": "^2.2.4",
     "@hookform/resolvers": "^5.0.1",
     "@nestjs/config": "^4.0.2",
     "@tanstack/react-query": "^5.74.7",
     "@tanstack/react-query-devtools": "^5.74.7",
     "@types/nodemailer": "^6.4.17",
     "axios": "^1.9.0",
+    "date-fns": "^4.1.0",
     "i18next": "^25.0.1",
     "i18next-http-backend": "^3.0.2",
     "nodemailer": "^6.10.1",
@@ -31,6 +31,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
+    "@heroicons/react": "^2.2.0",
+    "@tailwindcss/line-clamp": "^0.4.4",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
