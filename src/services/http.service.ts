@@ -86,12 +86,12 @@ export class HttpService implements IHttpService {
         return this.transformResponse(response);
     }
 
-    async post<T>(url: string, data?: any, config?: HttpRequestConfig): Promise<HttpResponse<T>> {
+    async post<T>(url: string, data?: unknown, config?: HttpRequestConfig): Promise<HttpResponse<T>> {
         const response = await this.client.post<T>(url, data, this.transformConfig(config));
         return this.transformResponse(response);
     }
 
-    async put<T>(url: string, data?: any, config?: HttpRequestConfig): Promise<HttpResponse<T>> {
+    async put<T>(url: string, data?: unknown, config?: HttpRequestConfig): Promise<HttpResponse<T>> {
         const response = await this.client.put<T>(url, data, this.transformConfig(config));
         return this.transformResponse(response);
     }

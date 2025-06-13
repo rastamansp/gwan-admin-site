@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import { DatasetService, DatasetFile } from '../services/dataset.service';
+import { DatasetService, DatasetFile } from '../modules/knowledge/services/dataset.service';
 
 interface FileUploadModalProps {
     isOpen: boolean;

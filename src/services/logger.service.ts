@@ -7,7 +7,7 @@ interface LogContext {
     method?: string;
     endpoint?: string;
     userId?: string;
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 class LoggerService {

@@ -12,7 +12,7 @@ import {
   ChatBubbleLeftRightIcon,
   GlobeAltIcon
 } from '@heroicons/react/24/outline';
-import KnowledgeBaseSidebar from '../KnowledgeBaseSidebar';
+import KnowledgeBaseSidebar from '../../modules/knowledge/components/KnowledgeBaseSidebar';
 
 interface SidebarProps {
   open: boolean;

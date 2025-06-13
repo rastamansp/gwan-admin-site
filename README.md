@@ -1,88 +1,209 @@
 # GWAN Admin Site
 
-Um painel administrativo moderno construído com React, Vite, TypeScript e Tailwind CSS.
+Sistema administrativo modular para gerenciamento de chatbots, crawling de dados e bases de conhecimento.
 
-## 🚀 Tecnologias
+## 🏗️ Arquitetura
 
-Este projeto utiliza as seguintes tecnologias:
-
-- [React](https://react.dev/) - Biblioteca JavaScript para construção de interfaces
-- [Vite](https://vitejs.dev/) - Build tool e dev server
-- [TypeScript](https://www.typescriptlang.org/) - Superset JavaScript com tipagem estática
-- [Tailwind CSS](https://tailwindcss.com/) - Framework CSS utility-first
-- [React Query](https://tanstack.com/query/latest) - Gerenciamento de estado e cache para dados do servidor
-- [React Router](https://reactrouter.com/) - Roteamento para React
-- [i18next](https://www.i18next.com/) - Internacionalização
-- [React Hook Form](https://react-hook-form.com/) - Gerenciamento de formulários
-- [Zod](https://zod.dev/) - Validação de esquemas TypeScript
-- [Headless UI](https://headlessui.com/) - Componentes UI acessíveis e sem estilo
-- [Heroicons](https://heroicons.com/) - Ícones SVG
-
-## 📁 Estrutura do Projeto
+O projeto segue os princípios de **Clean Architecture** e **SOLID**, organizado em módulos independentes:
 
 ```
 src/
-├── assets/      # Arquivos estáticos (imagens, etc)
-├── components/  # Componentes React reutilizáveis
-│   ├── common/  # Componentes comuns
-│   ├── layout/  # Componentes de layout (Header, Sidebar, etc)
-│   └── modules/ # Componentes específicos de módulos
-├── config/      # Configurações do projeto
-├── hooks/       # Custom React hooks
-├── i18n/        # Configurações e arquivos de internacionalização
-├── pages/       # Componentes de página
-├── services/    # Serviços e integrações com APIs
-├── types/       # Definições de tipos TypeScript
-└── utils/       # Funções utilitárias
+├── modules/                    # Módulos da aplicação
+│   ├── auth/                  # Autenticação e autorização
+│   ├── chatbots/              # Gerenciamento de chatbots
+│   ├── crawling/              # Crawling de dados web
+│   ├── dashboard/             # Dashboard principal
+│   ├── knowledge/             # Bases de conhecimento
+│   └── user-profile/          # Perfil do usuário
+├── services/                  # Serviços globais
+├── components/                # Componentes compartilhados
+├── hooks/                     # Hooks globais
+├── types/                     # Tipos TypeScript globais
+├── utils/                     # Utilitários
+└── config/                    # Configurações
 ```
 
-## 🔧 Instalação
+## 🚀 Tecnologias
 
-1. Clone o repositório:
-```bash
-git clone https://github.com/rastamansp/gwan-admin-site.git
-cd gwan-admin-site
-```
+- **React 19** com TypeScript
+- **Vite** para build e desenvolvimento
+- **TanStack Query** para gerenciamento de estado
+- **React Router** para roteamento
+- **Tailwind CSS** para estilização
+- **React Hook Form** para formulários
+- **React i18next** para internacionalização
+- **Axios** para requisições HTTP
 
-2. Instale as dependências:
-```bash
-npm install
-```
+## 📦 Módulos
 
-3. Configure as variáveis de ambiente:
-```bash
-# Copie o arquivo de exemplo
-cp .env.example .env
+### 🔐 Auth Module
+- **Páginas**: Login, Register, Verify, VerifyLogin
+- **Componentes**: ProtectedRoute
+- **Hooks**: useAuth
+- **Serviços**: AuthService
+- **Tipos**: UserSession, UpdateProfileData
 
-# Edite o arquivo .env com suas configurações
-```
+### 🤖 Chatbots Module
+- **Páginas**: ChatbotsPage, ChatbotList
+- **Componentes**: ChatbotForm, ChatbotTable, VectorConfigForm, N8nConfigForm
+- **Hooks**: useChatbotService
+- **Serviços**: ChatbotService
+- **Tipos**: Chatbot, CreateChatbotDto
 
-## 🌍 Variáveis de Ambiente
+### 🕷️ Crawling Module
+- **Páginas**: CrawlingListPage, CrawlingDetailPage
+- **Componentes**: CreateCrawlingModal, StatusBadge, FormatChips
+- **Hooks**: useCrawling
+- **Serviços**: CrawlingService
+- **Tipos**: Crawling, CrawlingRequest, CrawlingStatus
 
-O projeto utiliza as seguintes variáveis de ambiente:
+### 📚 Knowledge Module
+- **Páginas**: KnowledgeBaseManagement, KnowledgeBaseSearch, KnowledgeBaseDatasetUpload
+- **Componentes**: KnowledgeBaseSidebar
+- **Serviços**: KnowledgeService, DatasetService
+- **Tipos**: KnowledgeBase, SimilarResult, DatasetFile
 
+### 📊 Dashboard Module
+- **Páginas**: Dashboard
+- **Componentes**: Métricas e estatísticas
+
+### 👤 User Profile Module
+- **Páginas**: UserProfile
+- **Funcionalidades**: Edição de perfil, atualização de dados
+
+## 🛠️ Serviços Globais
+
+### HttpService
+Serviço centralizado para requisições HTTP com interceptors e tratamento de erros.
+
+### SessionService
+Gerenciamento de sessão do usuário com persistência local.
+
+### LoggerService
+Sistema de logs centralizado para monitoramento e debug.
+
+## 🎯 Hooks Globais
+
+### useAuth
+Hook para autenticação e gerenciamento de usuário.
+
+### useTheme
+Hook para gerenciamento de tema (claro/escuro).
+
+## 📋 Tipos Globais
+
+### Errors
+- `AuthError`: Erros de autenticação
+- `NetworkError`: Erros de rede
+- `ValidationError`: Erros de validação
+
+## 🔧 Configuração
+
+### Variáveis de Ambiente
 ```env
-VITE_API_URL=http://localhost:3000/api  # URL base da API (incluindo o prefixo /api)
+VITE_API_URL=http://localhost:3000/api
+VITE_APP_NAME=GWAN Admin
 ```
 
-Você pode criar diferentes arquivos para diferentes ambientes:
-- `.env.development` - Desenvolvimento local
-- `.env.production` - Produção
-- `.env.staging` - Ambiente de staging
-
-## 🚀 Executando o Projeto
-
-Para iniciar o servidor de desenvolvimento:
+### Scripts Disponíveis
 ```bash
-npm run dev
+npm run dev          # Desenvolvimento
+npm run build        # Build de produção
+npm run lint         # Verificação de código
+npm run preview      # Preview do build
 ```
 
-O site estará disponível em `http://localhost:5173` (ou próxima porta disponível).
+## 🏛️ Princípios de Design
 
-Outros comandos disponíveis:
-- `npm run build` - Gera build de produção
-- `npm run preview` - Visualiza build de produção localmente
-- `npm run lint` - Executa verificação de linting
+### Clean Architecture
+- **Separação de responsabilidades** entre módulos
+- **Inversão de dependência** com interfaces
+- **Independência de frameworks** nos serviços
+
+### SOLID
+- **Single Responsibility**: Cada módulo tem uma responsabilidade
+- **Open/Closed**: Extensível sem modificação
+- **Liskov Substitution**: Interfaces bem definidas
+- **Interface Segregation**: Interfaces específicas
+- **Dependency Inversion**: Dependências através de abstrações
+
+## 🧹 Qualidade de Código
+
+### Linting
+- **ESLint** configurado com regras estritas
+- **TypeScript** com configuração rigorosa
+- **Prettier** para formatação consistente
+
+### Padrões
+- **Imports organizados** por tipo e ordem
+- **Nomenclatura consistente** em todo o projeto
+- **Tipos seguros** (evitando `any`)
+- **Hooks otimizados** com `useCallback` e dependências corretas
+
+## 🚀 Deploy
+
+### Build de Produção
+```bash
+npm run build
+```
+
+### Estrutura de Build
+```
+dist/
+├── assets/          # Assets otimizados
+├── index.html       # Página principal
+└── vite.svg         # Ícones
+```
+
+## 📈 Monitoramento
+
+### Performance
+- **Code splitting** automático por módulos
+- **Lazy loading** de componentes pesados
+- **Bundle analysis** disponível
+
+### Debug
+- **React Query DevTools** em desenvolvimento
+- **Console logs** estruturados
+- **Error boundaries** para captura de erros
+
+## 🔄 Atualizações Recentes
+
+### v2.0.0 - Modularização Completa
+- ✅ **Refatoração modular** completa
+- ✅ **Limpeza de código** (0 erros de lint)
+- ✅ **Tipos seguros** (substituição de `any` por `unknown`)
+- ✅ **Hooks otimizados** com `useCallback`
+- ✅ **Imports organizados** e sem duplicações
+- ✅ **Estrutura escalável** para novos módulos
+
+### Melhorias Implementadas
+- **Arquitetura modular** com separação clara de responsabilidades
+- **Serviços centralizados** para funcionalidades compartilhadas
+- **Tipos TypeScript** rigorosos e seguros
+- **Performance otimizada** com hooks React corretos
+- **Código limpo** sem variáveis ou imports não utilizados
+
+## 🤝 Contribuição
+
+1. **Fork** o projeto
+2. **Crie** uma branch para sua feature
+3. **Commit** suas mudanças
+4. **Push** para a branch
+5. **Abra** um Pull Request
+
+### Padrões de Commit
+```
+feat: nova funcionalidade
+fix: correção de bug
+refactor: refatoração de código
+docs: documentação
+test: testes
+```
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
 ## 🔐 Fluxo de Autenticação
 
@@ -250,68 +371,3 @@ O painel possui um módulo completo para gerenciamento de crawlings de dados, pe
 - O modal de criação utiliza [React Hook Form](https://react-hook-form.com/) e [Zod](https://zod.dev/) para validação.
 - O campo de URL foi ajustado para garantir contraste e acessibilidade (`text-gray-900`).
 - O sistema trata diferentes formatos de resposta da API para garantir robustez e compatibilidade.
-
-## 📝 Licença
-
-Este projeto está sob a licença [inserir tipo de licença].
-
-## 👥 Contribuição
-
-1. Faça o fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
-## Fluxo de Uso da Plataforma
-
-### 1. Registro e Login do Cliente
-
-#### 1.1 Registro
-- Cliente acessa a página de registro
-- Preenche formulário com:
-  - Nome
-  - Email
-  - WhatsApp
-- Sistema envia email com código de ativação
-
-#### 1.2 Ativação da Conta
-- Cliente recebe email com código de ativação
-- Digita o código na tela de verificação
-- Após ativação, é redirecionado para tela de login
-
-#### 1.3 Login
-- Cliente digita email na tela de login
-- Sistema envia código de verificação por email
-- Cliente digita código de verificação
-- Após validação, é redirecionado para o Dashboard
-
-### 2. Criação de Base de Conhecimento
-
-#### 2.1 Criação
-- Cliente clica em "Adicionar Base"
-- Preenche formulário com:
-  - Nome da base
-  - Descrição
-- Clica em "Criar"
-- É redirecionado para tela de upload de arquivo
-
-### 3. Upload de Arquivos
-
-#### 3.1 Upload
-- Cliente seleciona arquivo PDF
-- Clica em "Enviar"
-- Arquivo é adicionado à base de conhecimento
-- Sistema valida:
-  - Formato (apenas PDF)
-  - Tamanho (máximo 5MB)
-
-### 4. Processamento da Base de Conhecimento
-
-#### 4.1 Início do Processamento
-- Cliente clica em "Iniciar Processamento"
-- Sistema:
-  - Atualiza status para "processing"
-  - Envia mensagem para fila de processamento
-  - Inicia extração de conhecimento
-- Interface mostra status do processamento
