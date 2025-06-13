@@ -6,9 +6,16 @@ services:
     container_name: gwan-admin-site
     working_dir: /app  # Diretório de trabalho dentro do container
     # Comando para servir o build do React/Vite
-    command: sh -c "npm install -g serve && serve -s dist -l 3000"
+    command: sh -c "apt-get update && apt-get install -y curl && npm install -g serve && serve -s dist -l 3000"
     volumes:
       - /opt/gwan-admin-site:/app  # Mapeia o código e o build do host para o container
+      - ./health-check.sh:/health-check.sh:ro
+    healthcheck:
+      test: ["CMD", "bash", "/health-check.sh"]
+      interval: 30s
+      timeout: 15s
+      retries: 3
+      start_period: 60s
     labels:
       # Configurações do Traefik para domínio e HTTPS
       - "traefik.enable=true"

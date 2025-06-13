@@ -5,6 +5,7 @@ SITE_PATH="/opt/gwan-admin-site"
 ENV_FILE="$SITE_PATH/.env"
 ENV_BACKUP="$SITE_PATH/.env.backup"
 LOG_FILE="$SITE_PATH/deploy.log"
+DOCKER_COMPOSE_FILE="$SITE_PATH/docker-compose.yml"
 
 # Função para logging
 log() {
@@ -21,6 +22,34 @@ handle_error() {
         rm "$ENV_BACKUP"
     fi
     exit 1
+}
+
+# Função para verificar health do container
+check_container_health() {
+    local container_name="gwan-admin-site"
+    local max_attempts=10
+    local attempt=1
+    
+    log "🏥 Verificando health do container..."
+    
+    while [ $attempt -le $max_attempts ]; do
+        if docker ps --filter "name=$container_name" --filter "health=healthy" | grep -q "$container_name"; then
+            log "✅ Container está healthy!"
+            return 0
+        fi
+        
+        log "⏳ Tentativa $attempt/$max_attempts - Container ainda não está healthy..."
+        sleep 30
+        attempt=$((attempt + 1))
+    done
+    
+    log "⚠️ Container não ficou healthy após $max_attempts tentativas"
+    log "📋 Status do container:"
+    docker ps --filter "name=$container_name" || true
+    log "📋 Logs do container:"
+    docker logs --tail 50 "$container_name" || true
+    
+    return 1
 }
 
 # Inicializa o arquivo de log
@@ -101,14 +130,51 @@ if ! npm run build; then
     handle_error "Falha ao gerar build"
 fi
 
-# Reinicia o container
-log "🐳 Reiniciando container Docker gwan-admin-site..."
-if ! docker restart gwan-admin-site; then
-    handle_error "Falha ao reiniciar container"
+# Verifica se o build foi gerado
+if [ ! -d "dist" ]; then
+    handle_error "Diretório dist não foi criado após o build"
 fi
 
-log "✅ Deploy finalizado com sucesso!"
-log "🌐 Acesse: https://admin.gwan.com.br"
+# Para o container atual
+log "🛑 Parando container atual..."
+docker stop gwan-admin-site || log "⚠️ Aviso: Container não estava rodando"
+
+# Remove o container antigo
+log "🗑️ Removendo container antigo..."
+docker rm gwan-admin-site || log "⚠️ Aviso: Container não existia"
+
+# Inicia o novo container
+log "🚀 Iniciando novo container..."
+if [ -f "$DOCKER_COMPOSE_FILE" ]; then
+    if ! docker-compose up -d; then
+        handle_error "Falha ao iniciar container com docker-compose"
+    fi
+else
+    if ! docker run -d \
+        --name gwan-admin-site \
+        --network gwan \
+        -v "$SITE_PATH:/app" \
+        -p 3000:3000 \
+        --restart always \
+        node:20-bullseye \
+        sh -c "cd /app && apt-get update && apt-get install -y curl && npm install -g serve && serve -s dist -l 3000"; then
+        handle_error "Falha ao iniciar container"
+    fi
+fi
+
+# Aguarda um pouco para o container inicializar
+log "⏳ Aguardando inicialização do container..."
+sleep 10
+
+# Verifica o health do container
+if ! check_container_health; then
+    log "⚠️ Container iniciado mas health check falhou"
+    log "📋 Últimos logs do container:"
+    docker logs --tail 20 gwan-admin-site || true
+else
+    log "✅ Deploy finalizado com sucesso!"
+    log "🌐 Acesse: https://admin.gwan.com.br"
+fi
 
 # Limpa logs antigos (mantém apenas os últimos 10)
 find "$SITE_PATH" -name "deploy.log.*" -type f -mtime +10 -delete

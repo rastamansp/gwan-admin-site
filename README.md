@@ -8,7 +8,7 @@ O projeto segue os princípios de **Clean Architecture** e **SOLID**, organizado
 
 ```
 src/
-├── modules/                    # Módulos da aplicação
+├── modules/                   # Módulos da aplicação
 │   ├── auth/                  # Autenticação e autorização
 │   ├── chatbots/              # Gerenciamento de chatbots
 │   ├── crawling/              # Crawling de dados web
