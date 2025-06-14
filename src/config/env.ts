@@ -4,7 +4,7 @@ interface EnvConfig {
 }
 
 const env: EnvConfig = {
-  API_URL: import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://api.gwan.com.br/api' : 'http://localhost:3000/api'),
+  API_URL: import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://bff.gwan.com.br/api' : 'http://localhost:3000/api'),
   ENV: import.meta.env.MODE,
 };
 
