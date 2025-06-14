@@ -27,4 +27,5 @@ export default defineConfig({
   define: {
     __DEV__: false,
   },
+  envPrefix: 'VITE_',
 })

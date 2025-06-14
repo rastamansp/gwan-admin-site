@@ -41,6 +41,23 @@ fi
 
 # Gera o build
 log "🏗️ Buildando o projeto Vite..."
+
+# Carrega variáveis de ambiente do arquivo de produção se existir
+if [ -f "env.production" ]; then
+    log "📋 Carregando variáveis de ambiente de env.production..."
+    export $(cat env.production | grep -v '^#' | xargs)
+fi
+
+# Define variáveis padrão se não estiverem definidas
+export VITE_API_URL=${VITE_API_URL:-https://bff.gwan.com.br/api}
+export VITE_APP_NAME=${VITE_APP_NAME:-GWAN Admin}
+export VITE_APP_VERSION=${VITE_APP_VERSION:-2.0.0}
+
+log "🔧 Variáveis de ambiente para o build:"
+log "   VITE_API_URL: $VITE_API_URL"
+log "   VITE_APP_NAME: $VITE_APP_NAME"
+log "   VITE_APP_VERSION: $VITE_APP_VERSION"
+
 if ! npm run build; then
     handle_error "Falha ao gerar build"
 fi
