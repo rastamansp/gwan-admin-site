@@ -51,11 +51,21 @@ if [ ! -d "build" ]; then
 fi
 
 # Reinicia o container
-log "♻️ Reiniciando container no Portainer..."
-if ! docker restart gwan-admin-site; then
-    log "⚠️ Aviso: Falha ao reiniciar container. Verifique se está rodando no Portainer."
+log "♻️ Verificando container no Portainer..."
+if docker ps -a --filter "name=gwan-admin-site" | grep -q "gwan-admin-site"; then
+    log "🔄 Container encontrado, reiniciando..."
+    if ! docker restart gwan-admin-site; then
+        log "⚠️ Aviso: Falha ao reiniciar container. Verifique os logs no Portainer."
+    else
+        log "✅ Container reiniciado com sucesso!"
+    fi
 else
-    log "✅ Container reiniciado com sucesso!"
+    log "ℹ️ Container não encontrado. Execute o deploy no Portainer primeiro!"
+    log "📋 Próximos passos:"
+    log "   1. Acesse o Portainer"
+    log "   2. Vá para Stacks → Add stack"
+    log "   3. Use o arquivo docker-compose.yml"
+    log "   4. Deploy"
 fi
 
 # Verifica se o container está rodando
@@ -65,7 +75,12 @@ if docker ps --filter "name=gwan-admin-site" --filter "status=running" | grep -q
     log "✅ Container está rodando!"
     log "🌐 Acesse: https://admin.gwan.com.br"
 else
-    log "⚠️ Container não está rodando. Verifique os logs no Portainer."
+    log "ℹ️ Container não está rodando."
+    if docker ps -a --filter "name=gwan-admin-site" | grep -q "gwan-admin-site"; then
+        log "📋 Container existe mas não está rodando. Verifique os logs no Portainer."
+    else
+        log "📋 Container não existe. Execute o deploy no Portainer primeiro!"
+    fi
 fi
 
 log "✅ Deploy finalizado!"
