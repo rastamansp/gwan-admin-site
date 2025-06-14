@@ -1,11 +1,13 @@
 # Build stage
-FROM node:20-bullseye as build
+FROM node:20-bullseye AS builder
 
 WORKDIR /app
 
-# Install dependencies
+# Copy package files
 COPY package*.json ./
-RUN npm install
+
+# Install dependencies
+RUN npm ci --only=production
 
 # Copy source code
 COPY . .
@@ -14,15 +16,15 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM node:20-bullseye
+FROM node:20-bullseye AS production
 
 WORKDIR /app
 
-# Copy built assets from build stage
-COPY --from=build /app/dist ./dist
-
-# Install only production dependencies
+# Install serve globally
 RUN npm install -g serve
+
+# Copy built application from builder stage
+COPY --from=builder /app/dist ./dist
 
 # Expose port
 EXPOSE 3000
