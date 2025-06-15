@@ -16,12 +16,16 @@ docker network create gwan
 
 ### 2. Deploy no Portainer
 
+**IMPORTANTE**: Use o método "Repository" no Portainer para acessar o código do servidor.
+
 1. Acesse o Portainer
 2. Vá para **Stacks** → **Add stack**
 3. Configure:
    - **Name**: `gwan-admin-site`
-   - **Build method**: Web editor
-   - **Cole o conteúdo do `docker-compose.portainer.yml`**
+   - **Build method**: Repository
+   - **Repository URL**: URL do seu repositório Git
+   - **Repository reference**: `main` (ou sua branch principal)
+   - **Compose path**: `docker-compose.portainer.yml`
 4. Clique em **Deploy the stack**
 
 ### 3. Desenvolvimento Local
@@ -100,5 +104,18 @@ docker logs gwan-admin-site-local
 ## 💡 Fluxo de Trabalho
 
 1. **Setup**: `git clone` no servidor
-2. **Deploy**: Stack no Portainer
+2. **Deploy**: Stack no Portainer usando Repository
 3. **Atualizações**: `./update.sh` + rebuild no Portainer
+
+## 🔍 Métodos de Deploy no Portainer
+
+### Método 1: Repository (Recomendado)
+
+- **Build method**: Repository
+- **Repository URL**: URL do seu Git
+- **Compose path**: `docker-compose.portainer.yml`
+
+### Método 2: Web Editor (Alternativo)
+
+- **Build method**: Web editor
+- **Cole o conteúdo**: do `docker-compose.portainer.yml`

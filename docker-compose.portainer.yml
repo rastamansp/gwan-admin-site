@@ -3,7 +3,7 @@ version: "3.8"
 services:
   gwan-admin-site:
     build:
-      context: /opt/gwan-admin-site
+      context: .
       dockerfile: Dockerfile
       args:
         - VITE_API_URL=https://bff.gwan.com.br/api
