@@ -3,11 +3,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=https://bff.gwan.com.br/api
+        - VITE_APP_NAME=GWAN Admin
+        - VITE_APP_VERSION=2.0.0
     container_name: gwan-admin-site-local
-    environment:
-      - VITE_API_URL=https://bff.gwan.com.br/api
-      - VITE_APP_NAME=GWAN Admin
-      - VITE_APP_VERSION=2.0.0
     ports:
-      - "3000:3000"
+      - "3000:80"
     restart: always 

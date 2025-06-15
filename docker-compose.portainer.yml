@@ -1,28 +1,21 @@
-version: '3.8'
+version: "3.8"
 
 services:
   gwan-admin-site:
-    image: node:20-alpine
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=https://bff.gwan.com.br/api
+        - VITE_APP_NAME=GWAN Admin
+        - VITE_APP_VERSION=2.0.0
     container_name: gwan-admin-site
-    working_dir: /app
-    volumes:
-      - /opt/gwan-admin-site/dist:/app/dist:ro
-    command: >
-      sh -c "
-        npm install -g serve &&
-        serve -s dist -l 3000 --single
-      "
-    environment:
-      - VITE_API_URL=https://bff.gwan.com.br/api
-      - VITE_APP_NAME=GWAN Admin
-      - VITE_APP_VERSION=2.0.0
+    restart: always
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.gwan-admin-site.rule=Host(`admin.gwan.com.br`)"
-      - "traefik.http.routers.gwan-admin-site.entrypoints=websecure"
+      - "traefik.http.routers.gwan-admin-site.entrypoints=web,websecure"
       - "traefik.http.routers.gwan-admin-site.tls.certresolver=letsencrypt"
-      - "traefik.http.services.gwan-admin-site.loadbalancer.server.port=3000"
-    restart: always
     networks:
       - gwan
 
