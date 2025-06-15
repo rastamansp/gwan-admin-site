@@ -1,7 +1,8 @@
 import { HttpService } from '../../../services/http.service';
 import {
     Crawling,
-    CrawlingListResponse
+    CrawlingListResponse,
+    CrawlingRequest
 } from '../types/crawling';
 
 export class CrawlingService {
@@ -46,8 +47,8 @@ export class CrawlingService {
         return response.data;
     }
 
-    async createCrawling(url: string, format: string): Promise<Crawling> {
-        const response = await this.httpService.post<Crawling>('/user/crawling', { url, format });
+    async createCrawling(request: CrawlingRequest): Promise<Crawling> {
+        const response = await this.httpService.post<Crawling>('/user/crawling', request);
         return response.data;
     }
 
