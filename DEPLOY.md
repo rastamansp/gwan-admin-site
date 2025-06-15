@@ -13,6 +13,17 @@
 
 ### 1. Produção - No Portainer (Recomendado)
 
+**IMPORTANTE**: Primeiro você precisa fazer o build no servidor, depois subir no Portainer.
+
+#### Passo 1: Build no Servidor
+
+```bash
+cd /opt/gwan-admin-site
+./deploy.sh
+```
+
+#### Passo 2: Deploy no Portainer
+
 1. Acesse o Portainer
 2. Vá para **Stacks** → **Add stack**
 3. Configure:
@@ -21,7 +32,7 @@
    - **Cole o conteúdo do `docker-compose.portainer.yml`**
 4. Clique em **Deploy the stack**
 
-### 2. Produção - Via Script (Alternativo)
+### 2. Produção - Via Script Completo (Alternativo)
 
 ```bash
 cd /opt/gwan-admin-site
@@ -67,7 +78,7 @@ A rede `gwan` será criada automaticamente se não existir (apenas produção).
 
 ### Produção
 
-1. **Via Portainer**: Rebuild do stack
+1. **Via Portainer**: Execute o build no servidor primeiro, depois reinicie o stack
 2. **Via Script**: Execute `./deploy.sh` novamente
 
 ### Desenvolvimento Local
@@ -92,6 +103,12 @@ docker logs gwan-admin-site-local
 
 ## 💡 Diferenças entre os Docker-compose
 
-- **`docker-compose.yml`**: Usado pelo script `deploy.sh` no servidor
-- **`docker-compose.portainer.yml`**: Usado no Portainer (sem variáveis de ambiente)
-- **`docker-compose.local.yml`**: Usado para desenvolvimento local
+- **`docker-compose.yml`**: Usado pelo script `deploy.sh` no servidor (faz build)
+- **`docker-compose.portainer.yml`**: Usado no Portainer (usa build já feito)
+- **`docker-compose.local.yml`**: Usado para desenvolvimento local (faz build)
+
+## 🔄 Fluxo de Deploy no Portainer
+
+1. **Build no servidor**: `./deploy.sh` (gera o build em `/opt/gwan-admin-site/build`)
+2. **Deploy no Portainer**: Usa `docker-compose.portainer.yml` (monta o build já feito)
+3. **Atualizações**: Repita o processo
