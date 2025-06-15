@@ -2,12 +2,15 @@ version: "3.8"
 
 services:
   gwan-admin-site:
-    image: nginx:alpine
+    build:
+      context: /opt/gwan-admin-site
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=https://bff.gwan.com.br/api
+        - VITE_APP_NAME=GWAN Admin
+        - VITE_APP_VERSION=2.0.0
     container_name: gwan-admin-site
     restart: always
-    volumes:
-      - /opt/gwan-admin-site/build:/usr/share/nginx/html:ro
-      - /opt/gwan-admin-site/nginx.conf:/etc/nginx/nginx.conf:ro
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.gwan-admin-site.rule=Host(`admin.gwan.com.br`)"
