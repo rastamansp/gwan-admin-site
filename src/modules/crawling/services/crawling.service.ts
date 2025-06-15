@@ -47,7 +47,7 @@ export class CrawlingService {
     }
 
     async createCrawling(url: string, format: string): Promise<Crawling> {
-        const response = await this.httpService.post<Crawling>('/crawling', { url, format });
+        const response = await this.httpService.post<Crawling>('/user/crawling', { url, format });
         return response.data;
     }
 
