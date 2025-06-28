@@ -3,6 +3,8 @@ import { IAuthService } from '../../../services/interfaces/auth.service.interfac
 import { HttpService } from '../../../services/http.service';
 import { SessionService } from '../../../services/session.service';
 import { AuthError } from '../../../types/errors';
+import axios from 'axios';
+import env from '../../../config/env';
 
 export class AuthService implements IAuthService {
     private static instance: AuthService;
@@ -27,7 +29,6 @@ export class AuthService implements IAuthService {
             console.error('No token available in session service');
             throw new AuthError('No authentication token available');
         }
-        console.log('Using token for request:', token.substring(0, 10) + '...');
         return { Authorization: `Bearer ${token}` };
     }
 
@@ -41,14 +42,10 @@ export class AuthService implements IAuthService {
 
     public async verifyLogin(email: string, code: string): Promise<UserSession> {
         try {
-            console.log('Verifying login for email:', email);
-            console.log('Making request to /auth/verify-login-code with code:', code);
             const response = await this.httpService.post<{ accessToken: string; user: User }>('/auth/verify-login-code', {
                 email,
                 code
             });
-
-            console.log('API Response:', JSON.stringify(response.data, null, 2));
 
             if (!response.data || !response.data.accessToken || !response.data.user) {
                 console.error('Invalid session response from API:', response.data);
@@ -64,7 +61,6 @@ export class AuthService implements IAuthService {
                 token: response.data.accessToken
             };
 
-            console.log('Login verified, setting session with token:', session.token.substring(0, 10) + '...');
             this.sessionService.setSession(session);
             return session;
         } catch (error) {
@@ -78,23 +74,16 @@ export class AuthService implements IAuthService {
 
     public async logout(): Promise<void> {
         try {
-            console.log('Starting logout process...');
             const token = this.sessionService.getToken();
             if (token) {
-                console.log('Found token for logout, making logout request...');
                 await this.httpService.post('/auth/logout', null, {
                     headers: this.getAuthHeaders()
                 });
-                console.log('Logout request successful');
-            } else {
-                console.log('No token found for logout request');
             }
         } catch (error) {
             console.error('Logout request failed:', error);
         } finally {
-            console.log('Clearing session after logout');
             this.sessionService.clearSession();
-            console.log('Logout process completed');
         }
     }
 
@@ -117,13 +106,41 @@ export class AuthService implements IAuthService {
             });
 
             const updatedSession = response.data;
-            console.log('Profile updated, setting new session with token:', updatedSession.token ? updatedSession.token.substring(0, 10) + '...' : 'no token');
             this.sessionService.setSession(updatedSession);
             return updatedSession;
         } catch (error) {
             console.error('Failed to update profile:', error);
             throw new AuthError('Failed to update profile', error);
         }
+    }
+
+    async verifyLoginCode(email: string, code: string): Promise<UserSession> {
+        const token = this.sessionService.getToken();
+        if (!token) {
+            throw new Error('No authentication token available');
+        }
+
+        const response = await axios.post(
+            `${env.API_URL}/auth/verify-login-code`,
+            { email, code },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            }
+        );
+
+        const session: UserSession = {
+            id: response.data.user.id,
+            name: response.data.user.name,
+            email: response.data.user.email,
+            description: response.data.user.description,
+            token: response.data.token
+        };
+
+        this.sessionService.setSession(session);
+        return session;
     }
 }
 

@@ -51,19 +51,9 @@ class LoggerService {
                     break;
             }
         } else {
-            // Em produção, loga apenas info, warn e error
-            if (level !== 'debug') {
-                switch (level) {
-                    case 'info':
-                        console.info(formattedMessage);
-                        break;
-                    case 'warn':
-                        console.warn(formattedMessage);
-                        break;
-                    case 'error':
-                        console.error(formattedMessage);
-                        break;
-                }
+            // Em produção, loga apenas erros
+            if (level === 'error') {
+                console.error(formattedMessage);
             }
         }
 

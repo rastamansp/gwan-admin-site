@@ -31,7 +31,6 @@ export const useCreateCrawling = () => {
             // Invalida as queries de listagem para refetch
             queryClient.invalidateQueries({ queryKey: ['crawlings'] });
             toast.success('Crawling criado com sucesso!');
-            console.log('Crawling criado:', data);
         },
         onError: (error: Error) => {
             console.error('Erro ao criar crawling:', error);

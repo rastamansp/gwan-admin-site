@@ -38,7 +38,7 @@ if (!i18n.isInitialized) {
       fallbackLng: 'pt',
       ns: ['auth', 'common', 'dashboard', 'knowledge', 'chatbots'],
       defaultNS: 'common',
-      debug: true,
+      debug: false,
       interpolation: {
         escapeValue: false
       },

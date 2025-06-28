@@ -135,7 +135,6 @@ export class KnowledgeService {
             status: 'new'
         };
 
-        console.log('Creating knowledge base with data:', data);
         const response = await axios.post(
             `${this.baseUrl}/user/knowledge`,
             data,
@@ -160,7 +159,6 @@ export class KnowledgeService {
     }
 
     async startProcess(id: string, bucketFileId: string): Promise<KnowledgeBase> {
-        console.log('Starting process for knowledge base:', { id, bucketFileId });
         const data = {
             id,
             bucketFileId,
@@ -172,7 +170,6 @@ export class KnowledgeService {
             data,
             { headers: this.getHeaders() }
         );
-        console.log('Process start response:', response.data);
         return response.data;
     }
 
@@ -180,7 +177,6 @@ export class KnowledgeService {
         const formData = new FormData();
         formData.append('file', file);
 
-        console.log('Uploading file to dataset:', datasetId);
         const response = await axios.post(
             `${this.baseUrl}/user/datasets/${datasetId}/documents`,
             formData,
@@ -191,7 +187,6 @@ export class KnowledgeService {
                 },
             }
         );
-        console.log('File upload response:', response.data);
         return response.data;
     }
 
@@ -203,37 +198,30 @@ export class KnowledgeService {
     }
 
     async listBucketFiles(datasetId: string): Promise<BucketFile[]> {
-        console.log('Fetching dataset files');
         const response = await axios.get(
             `${this.baseUrl}/user/datasets/${datasetId}/documents`,
             { headers: this.getHeaders() }
         );
-        console.log('Dataset files response:', response.data);
         return response.data;
     }
 
     async deleteBucketFile(datasetId: string, documentId: string): Promise<void> {
-        console.log('Deleting dataset file:', documentId);
         await axios.delete(
             `${this.baseUrl}/user/datasets/${datasetId}/documents/${documentId}`,
             { headers: this.getHeaders() }
         );
-        console.log('Dataset file deleted successfully');
     }
 
     async findSimilar(knowledgeBaseId: string, text: string, limit: number = 5): Promise<SimilarResult[]> {
-        console.log('Finding similar content:', { knowledgeBaseId, text, limit });
         const response = await axios.post(
             `${this.baseUrl}/user/knowledge/${knowledgeBaseId}/similar`,
             { text, limit },
             { headers: this.getHeaders() }
         );
-        console.log('Similar content response:', response.data);
         return response.data;
     }
 
     async updateChunkStatus(knowledgeBaseId: string, chunkId: string, enable: boolean): Promise<void> {
-        console.log('Atualizando status do chunk:', { knowledgeBaseId, chunkId, enable });
         await axios.patch(
             `${this.baseUrl}/user/knowledge/${knowledgeBaseId}/chunks/${chunkId}/status`,
             { enable },

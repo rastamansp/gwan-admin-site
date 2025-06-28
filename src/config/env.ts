@@ -8,10 +8,4 @@ const env: EnvConfig = {
   ENV: import.meta.env.MODE,
 };
 
-// Log environment in development
-if (import.meta.env.DEV) {
-  console.log('Environment:', env.ENV);
-  console.log('API URL:', env.API_URL);
-}
-
 export default env; 
