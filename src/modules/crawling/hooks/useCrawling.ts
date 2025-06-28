@@ -27,7 +27,7 @@ export const useCreateCrawling = () => {
 
     return useMutation({
         mutationFn: (request: CrawlingRequest) => crawlingService.createCrawling(request),
-        onSuccess: (data) => {
+        onSuccess: () => {
             // Invalida as queries de listagem para refetch
             queryClient.invalidateQueries({ queryKey: ['crawlings'] });
             toast.success('Crawling criado com sucesso!');
