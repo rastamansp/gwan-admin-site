@@ -10,6 +10,7 @@ import {
   MoonIcon
 } from '@heroicons/react/24/outline';
 import { SessionService } from '../../services/session.service';
+import { getAppVersion } from '../../utils/version';
 
 interface HeaderProps {
   setSidebarOpen: (open: boolean) => void;
@@ -21,6 +22,7 @@ export default function Header({ setSidebarOpen, theme, toggleTheme }: HeaderPro
   const { t } = useTranslation('common');
   const navigate = useNavigate();
   const sessionService = SessionService.getInstance();
+  const appVersion = getAppVersion();
 
   const handleLogout = () => {
     sessionService.clearSession();
@@ -42,6 +44,16 @@ export default function Header({ setSidebarOpen, theme, toggleTheme }: HeaderPro
           <span className="sr-only">{t('openSidebar')}</span>
           <Bars3Icon className="h-6 w-6" aria-hidden="true" />
         </button>
+
+        {/* Logo/Nome da aplicação com versão */}
+        <div className="flex items-center">
+          <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+            gwan
+            <span className="ml-2 text-sm font-normal text-gray-500 dark:text-gray-400">
+              v{appVersion}
+            </span>
+          </h1>
+        </div>
 
         <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
           <div className="flex flex-1" />
